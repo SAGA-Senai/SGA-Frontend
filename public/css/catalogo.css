@@ -443,3 +443,75 @@ td {
     height: auto;
     width: 35vh;
 }
+
+/* ---------------------------------------------------------------------------- */
+/* Monitores menores */
+@media (max-width: 1400px){
+#filtrarBtn{
+    margin-top: 10%;
+    margin-left: 75%;
+}
+#dropdown {
+    margin-left: 5%;
+}
+select {
+    width: 11vw;
+    margin-left: 4%;
+}
+#ordernaritem {
+    margin-left: 5%;
+}
+}
+
+/* ---------------------------------------------------------------------------- */
+/* PARA TABLET Vertical */
+@media (max-width: 1199px){
+    #filtrar {
+        width: 20vw;
+        margin-left: 10%;
+    }
+    #pesquisar {
+        width: 17vw;
+    }
+    #caixote {
+        width: 30vw;
+        height: 20vh;
+        margin-left: 15%;
+    }
+    #dropdown {
+        margin-left: 13%;
+    }
+}
+
+/* ---------------------------------------------------------------------------- */
+/* PARA CELULAR */
+@media (max-width: 425px){
+    #filtrar {
+        font-size: 0;
+    }
+    #pesquisar {
+        width: 12vw;
+        font-size: 0;
+    }
+    #caixote {
+        width: 60vw;
+        height: 30vh;
+    }
+    #filtrarBtn{
+        margin-top: 5%;
+        margin-left: 70%;
+    }
+    #dropdown {
+        margin-left: 5%;
+    }
+    select {
+        width: 23vw;
+        margin-left: 4%;
+    }
+    .content-table{
+        width: 100%;
+    }
+    #cabecalho-table{
+        font-size: 0.7vh;
+    }
+}

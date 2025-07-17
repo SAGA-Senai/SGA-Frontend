@@ -206,9 +206,11 @@ select {
 
 /* Alinhamento do container dos filtros */
 #caixote {
-    display: none; /* Inicialmente escondido */
+    display: none;
+    /* Inicialmente escondido */
     position: absolute;
-    top: 50px; /* Ajuste para aparecer abaixo do botão Filtrar */
+    top: 50px;
+    /* Ajuste para aparecer abaixo do botão Filtrar */
     width: 20vw;
     background-color: #fff;
     border: 1px solid #ccc;
@@ -258,7 +260,7 @@ select {
     margin-left: 10%;
     padding: 0.9vh 0.9vw;
     font-size: 14px;
-    color: #FFCC00;
+    color: #fff;
     background-color: #FFCC00;
     border-color: transparent;
     border-radius: 0.5vh;
@@ -858,4 +860,144 @@ select #numb_lote option{
 .footer img {
     height: auto;
     width: 35vh;
+}
+
+/* ---------------------------------------------------------------------------- */
+/* Monitores menores */
+@media (max-width: 1400px){
+    #caixote{
+        margin-top: 12%;
+    }
+    #registrationForm input {
+        font-size: 13px;
+    }
+    #submitButton {
+        width: 34%;
+    }
+}
+
+/* ---------------------------------------------------------------------------- */
+/* PARA TABLET Vertical */
+@media (max-width: 1199px){
+    .container {
+        width: 85vw;
+        gap: 2%;
+    }
+    #filtrar {
+        width: 20vw;
+        margin-left: 4%;
+    }
+    #pesquisar {
+        width: 17vw;
+    }
+    #caixote{
+        margin-top: 33%;
+        margin-left: 3%;
+    }
+    #caixa-recebimento {
+        margin-right: 10vh;
+    }
+    #formContainer{
+        margin-top: -90%;
+    }
+    #formContainer h2 {
+        font-size: 2.3vh;
+    }
+    
+    #submitButton {
+        width: 34%;
+        height: 3vh;
+    }
+    #submitButton h3{
+        margin-left: 25%;
+    }
+}
+
+/* ---------------------------------------------------------------------------- */
+/* PARA CELULAR */
+@media (max-width: 425px){
+    .container {
+        width: 95vw;
+        gap: 2%;
+    }
+    #btn-recebim {
+        width: 25vw;
+        height: 6vh;
+        font-size: 1.5vh;
+    }
+    #btn-saida {
+        width: 25vw;
+        height: 6vh;
+        font-size: 2vh;
+    }
+    #btn-saldo {
+        width: 25vw;
+        height: 6vh;
+        font-size: 2vh;
+    }
+    #filtrar {
+        font-size: 0;
+    }
+    #pesquisar {
+        width: 12vw;
+        font-size: 0;
+    }
+    #caixote {
+        width: 65vw;
+        height: 30vh;
+        margin-top: 35%;
+    }
+    #filtrarBtn{
+        margin-top: 5%;
+        margin-left: 70%;
+    }
+    .header {
+        max-width: 230px;
+    }
+    .title {
+        font-size: 1.7vh;
+    }
+    #caixa-recebimento {
+        width: 7vh;
+        height: 7vh;
+        margin-right: 5vh;
+    }
+    #formContainer{
+        margin-top: -180%;
+        margin-left: 10%;
+        width: 70vw;
+        height: 60vh;
+    }
+    #formContainer h2 {
+        font-size: 2.3vh;
+    }
+    .input-container {
+        margin-bottom: 15px;
+    }
+    #registrationForm input {
+        width: 85%;
+        padding: 9px;
+        font-size: 10px;
+    }
+    #registrationForm label {
+        left: 10vw;
+        font-size: 2vh;
+    }
+    #registrationForm input:focus+label,
+    #registrationForm input:not(:placeholder-shown)+label {
+        left: 7vw;
+        font-size: 2vh;
+    }
+    .input-container #quantity_hint {
+        font-size: 2vh;
+        margin-left: 12%;
+    }
+    #submitButton {
+        width: 45%;
+        height: 4vh;
+    }
+    #submitButton h3{
+        margin-left: 12%;
+        font-weight: 400;
+    }
 }

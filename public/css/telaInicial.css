@@ -196,6 +196,10 @@ transform: scale(1.05);
   #chart{
     margin-top: -1%;
   }
+  .dropdown-content a {
+    font-size: 2.3vh;
+    padding: 6px 10px;
+  }
 }
 /* ---------------------------------------------------------------------------- */
 /* PARA TABLET Vertical */
@@ -234,6 +238,10 @@ transform: scale(1.05);
   }
   .button img{
     width: 50%;
+  }
+  .dropdown-content a {
+    font-size: 1.8vh;
+    padding: 4px 1px;
   }
 }
 /* ---------------------------------------------------------------------------- */
@@ -279,5 +287,9 @@ transform: scale(1.05);
 
   .button img{
     width: 80%;
+  }
+  .dropdown-content a {
+    font-size: 1.4vh;
+    padding: 4px 1px;
   }
 }

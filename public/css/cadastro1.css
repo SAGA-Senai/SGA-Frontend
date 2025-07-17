@@ -269,3 +269,104 @@ section.cadastro .flex .parte-bolinhas .container {
     height: auto;
     width: 35vh;
 }
+
+/* ---------------------------------------------------------------------------- */
+/* Monitores menores */
+@media (max-width: 1400px){
+    .setas {
+        display: flex;
+        justify-content: center;
+        margin-top: -16vh;
+    }
+}
+
+/* ---------------------------------------------------------------------------- */
+/* PARA TABLET Vertical */
+@media (max-width: 1199px){
+    /* CADASTRO */
+    section.cadastro .flex {
+        flex-direction: column;
+        align-items: center;
+        gap: 10vh;
+    }
+    .parte-bolinhas .container {
+        width: 65vw;
+        height: 27vh;
+    }
+    .parte-bolinhas .container .bolinha1 {
+        width: 4vh;
+        height: 4vh;
+    }
+    .parte-bolinhas .container .palitinho1 {
+        height: 1vh;
+        margin: 0 9%;
+    }
+    .parte-bolinhas .container .bolinha2 {
+        width: 4vh;
+        height: 4vh;
+    }
+    .parte-bolinhas .container .palitinho2 {
+        height: 1vh;
+        margin: 0 9%;
+    }
+    .parte-bolinhas .container .bolinha3 {
+        width: 4vh;
+        height: 4vh;
+    }
+    .parte-bolinhas .container .palitinho3 {
+        height: 1vh;
+        margin: 0 9%;
+    }
+    .parte-bolinhas .container .bolinha4 {
+        width: 4vh;
+        height: 4vh;
+    }
+    .parte-bolinhas .container .palitinho4 {
+        height: 1vh;
+        margin: 0 9%;
+    }
+    .parte-bolinhas .container .bolinha5 {
+        width: 4vh;
+        height: 4vh;
+    }
+    .parte-bolinhas .container ul {
+        margin-top: -69%;
+        margin-left: 3%;
+    }
+    .parte-bolinhas ul li {
+        font-size: 2.5vh;
+        margin-top: -24%;
+        padding: 14.5%;
+    }
+    .parte-bolinhas .caixa-aberta {
+        margin-top: -20%;
+        margin-left: 70%;
+    }
+    .caixa-aberta img {
+        height: auto;
+        width: 150%;
+    }
+    /* DIREITA */
+    .inserir-info .container {
+        width: 90vw;
+        height: 55vh;
+        margin-left: 3%;
+        margin-top: -10%;
+    }
+    .inserir-info .container .porcentagem-linha {
+        width: 75vw;
+    }
+    .inserir-info .container .porcentagem-linha .linha-verde {
+        width: 15vw;
+    }
+    .inserir-info .container .divisoria {
+        width: 90vw;
+    }
+    /* INFORMAÇÕES BÁSICAS */
+    .setas {
+        margin-top: -6.5vh;
+    }
+    .footer {
+        margin-top: 30px;
+    }
+}

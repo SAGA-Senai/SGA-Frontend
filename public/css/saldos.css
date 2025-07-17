@@ -649,3 +649,77 @@ select:hover option:hover {
     height: auto;
     width: 35vh;
 }
+
+/* ---------------------------------------------------------------------------- */
+/* Monitores menores */
+@media (max-width: 1400px){
+    #caixote{
+        margin-top: 12%;
+    }
+}
+
+/* ---------------------------------------------------------------------------- */
+/* PARA TABLET Vertical */
+@media (max-width: 1199px){
+    .container {
+        width: 85vw;
+        gap: 2%;
+    }
+    #filtrar {
+        width: 20vw;
+        margin-left: 4%;
+    }
+    #pesquisar {
+        width: 17vw;
+    }
+    #caixote{
+        margin-top: 33%;
+        margin-left: 3%;
+    }
+}
+
+/* ---------------------------------------------------------------------------- */
+/* PARA CELULAR */
+@media (max-width: 425px){
+    .container {
+        width: 95vw;
+        gap: 2%;
+    }
+    #btn-recebim {
+        width: 25vw;
+        height: 6vh;
+        font-size: 1.5vh;
+    }
+    #btn-saida {
+        width: 25vw;
+        height: 6vh;
+        font-size: 2vh;
+    }
+    #btn-saldo {
+        width: 25vw;
+        height: 6vh;
+        font-size: 2vh;
+    }
+    #filtrar {
+        font-size: 0;
+    }
+    #pesquisar {
+        width: 12vw;
+        font-size: 0;
+    }
+    #caixote {
+        width: 65vw;
+        height: 30vh;
+        margin-top: 40%;
+    }
+    #filtrarBtn{
+        margin-top: 5%;
+        margin-left: 70%;
+    }
+    .header {
+        max-width: 230px;
+    }
+    .title {
+        font-size: 1.7vh;
+    }
+}
