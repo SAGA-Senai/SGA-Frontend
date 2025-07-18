@@ -8,12 +8,15 @@ function toggleForm() {
     formContainer.style.display = "block";
   }
 }
-document.getElementById("formContainer").addEventListener("click", (event) => {
-  const formContent = document.getElementById("formContent");
-  if (!formContent.contains(event.target)) {
-    document.getElementById("formContainer").style.display = "none";
-  }
-});
+
+// não sei o que era isso, mas estava impedindo de apertar o botão de submit do formulário,
+// pois o click só funcionava para o formulário
+// document.getElementById("formContainer").addEventListener("click", (event) => {
+//   const formContent = document.getElementById("formContent");
+//   if (!formContent.contains(event.target)) {
+//     document.getElementById("formContainer").style.display = "none";
+//   }
+// });
 
 function toggleSection(sectionId) {
   var section = document.getElementById(sectionId);
@@ -40,7 +43,7 @@ document
 
     const formContainer = document.getElementById("formContainer");
 
-    const response = await fetch("http://localhost:3000/financeiro", {
+    const response = await fetch("http://127.0.0.1:8000/financeiro", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -71,13 +74,14 @@ document
 //--------------------------------------------------------------Aparecer os recebimentos na tela
 async function fetchVerRecebimentos() {
   try {
-    const response = await fetch('/Recebimento');
+    const response = await fetch('http://127.0.0.1:8000/recebimento');
 
     if (!response.ok) {
       throw new Error('Erro ao buscar produtos: ' + response.statusText);
     }
 
-    const recebimentos = await response.json();
+    const recebimentos = await response.json(); // retorna como um dicionário pelo pydantic
+    const dados = recebimentos.dados // extraindo as informações
 
     const tabelaRecebimentos = document.querySelector('.table-container');
     if (!tabelaRecebimentos) {
@@ -86,12 +90,12 @@ async function fetchVerRecebimentos() {
 
     tabelaRecebimentos.innerHTML = ''; // Limpa o conteúdo anterior
 
-    if (recebimentos.length === 0) {
+    if (dados.length === 0) {
       tabelaRecebimentos.innerHTML = '<div class="nenhum-recebimento">Nenhum recebimento encontrado</div>';
       return;
     }
 
-    recebimentos.forEach((recebimento, index) => {
+    dados.forEach(recebimento => {
       // Cria uma linha principal
       const mainRow = document.createElement('div');
       mainRow.classList.add('row', 'main-row');

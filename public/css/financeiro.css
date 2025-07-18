@@ -470,8 +470,11 @@ select:hover option:hover {
 #submitButton {
     display: flex;
     justify-self: center;
-    align-content: center;
+    justify-content: center;
+    align-items: center;
     text-align: center;
+    font-size: large;
+    font-weight: bold;
     background-color: #FFCC00;
     color: white;
     border: none;

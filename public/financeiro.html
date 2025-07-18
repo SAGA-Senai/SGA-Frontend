@@ -138,7 +138,7 @@
         </div>
 
         <button type="submit" id="submitButton">
-          <h3>Cadastrar</h3>
+          Cadastrar
         </button>
       </form>
     </div>
@@ -151,29 +151,32 @@
     document.getElementById('registrationForm').addEventListener('submit', async function (event) {
       event.preventDefault();
 
-      const usuarioLogado = JSON.parse(localStorage.getItem('usuarioLogado'));
+      // comentado para testar o backend e a tabela recebimento não tem inseridoPor
+      // const usuarioLogado = JSON.parse(localStorage.getItem('usuarioLogado'));
 
       const formContainer = document.getElementById("formContainer");
 
       const recebimento = {
         fornecedor: document.getElementById('productFont').value,
         codigo: document.getElementById('codigo').value,
-        quantidade: document.getElementById('quantityReceived').value,
-        numbLote: document.getElementById('numbLote').value,
-        dataRecebimento: document.getElementById('dataRecebimento').value,
+        quant: document.getElementById('quantityReceived').value,
+        lote: document.getElementById('numbLote').value,
+        data_receb: document.getElementById('dataRecebimento').value,
         validade: document.getElementById('validade').value,
-        precoAqui: document.getElementById('precoAqui').value,
-        inseridoPor: usuarioLogado.tipo === 'professor' ? SNProfessor : usuarioLogado.email,
+        preco_de_aquisicao: document.getElementById('precoAqui').value,
+        // inseridoPor: usuarioLogado.tipo === 'professor' ? SNProfessor : usuarioLogado.email, não tem esse campo no banco de dados
       };
 
 
 
       try {
-        const response = await fetch('http://localhost:3000/adicionar-recebimento', {
+        const response = await fetch('http://127.0.0.1:8000/adicionar-recebimento', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify(recebimento),
         });
+
+        console.log(response)
 
         if (response.ok) {
           alert('recebimento adicionado com sucesso!');
@@ -249,7 +252,7 @@
 
         <!-- acabou as mudanças -->
         <form id="formPesquisa">
-            <input type="text" id="pesquisa" placeholder="Digite o código" required>
+            <input type="text" id="pesquisa" placeholder="Digite o código">
               <button id="pesquisar">Pesquisar <img src="imagens/lupa.svg" alt="" id="pes"></button>
             </button>
         </form>
@@ -333,25 +336,24 @@
     document.getElementById('formPesquisa').addEventListener('submit', async function (event) {
   event.preventDefault(); // Impede o envio tradicional do formulário
 
-  const codigo = document.getElementById('codigo').value.trim(); // Obtém o valor do código
+  // antes estava com o id codigo do formulário de adicionar recebimento
+  const codigo = document.getElementById('pesquisa').value.trim(); // Obtém o valor do código 
 
-  const pesquisa = {
-    codigo: codigo, // Envia o código digitado pelo usuário
-  };
+  // url com o código caso o código possua um valor
+  const url_pesquisa = codigo ? 'http://127.0.0.1:8000/recebimento/' + codigo : 'http://127.0.0.1:8000/recebimento'
 
   try {
     // Envia a requisição para o backend
-    const response = await fetch('http://localhost:3000/Recebimento', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(pesquisa)
-    });
+    // modificado para ser uma requisição GET com path parameter
+    const response = await fetch(url_pesquisa);
 
     if (response.ok) {
-      const produtos = await response.json(); // Recebe a resposta em formato JSON
+
+      const produtos = await response.json(); // Recebe a resposta em formato JSON **modificado pelo pydantic**
+      const dados = produtos.dados
 
       // Se não houver resultados
-      if (produtos.length === 0) {
+      if (dados.length === 0) {
         document.querySelector('#table-container').innerHTML = '<p>Nenhum produto encontrado!</p>';
         return;
       }
@@ -364,7 +366,7 @@
       let linhasTabela = '';
 
       // Processa os produtos retornados e cria o HTML para exibição
-      produtos.forEach((filtrado) => {
+      dados.forEach((filtrado) => {
         linhasTabela += `
           <div class="row main-row" onclick="this.nextElementSibling.style.display = this.nextElementSibling.style.display === 'none' ? 'flex' : 'none'">
             <div class="cell"><strong>Data</strong><span>${filtrado.DATA_RECEB}</span></div>
