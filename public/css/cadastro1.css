@@ -370,3 +370,47 @@ section.cadastro .flex .parte-bolinhas .container {
         margin-top: 30px;
     }
 }
+
+/* ---------------------------------------------------------------------------- */
+/* PARA CELULAR */
+@media (max-width: 425px){
+    /* CADASTRO */
+    .parte-bolinhas .container {
+        margin-left: 5%;
+        width: 85vw;
+    }
+    .parte-bolinhas .container ul {
+        margin-top: -78%;
+        margin-left: 5%;
+    }
+    .parte-bolinhas ul li {
+        font-size: 2.2vh;
+    }
+    .parte-bolinhas .caixa-aberta {
+        margin-left: 65%;
+    }
+    .caixa-aberta img {
+        width: 100%;
+    }
+    /* DIREITA */
+    .inserir-info .container {
+        height: 50vh;
+        margin-top: -20%;
+    }
+    .inserir-info .container .porcentagem-linha {
+        width: 70vw;
+    }
+    .inserir-info .container .porcentagem-linha .linha-verde {
+        width: 14vw;
+    }
+    /* INFORMAÇÕES BÁSICAS */
+    .setas {
+        margin-top: -8vh;
+    }
+    .setas img{
+        width: 57%;
+    }
+    .footer {
+        margin-top: 0px;
+    }
+}
