@@ -198,13 +198,14 @@ async function fetchLotes(fornecedorId, codigo) {
   //--------------------------------------------------------------Aparecer os recebimentos na tela
   async function fetchVerSaidas() {
     try {
-      const response = await fetch('/Saidas');
+      const response = await fetch('http://127.0.0.1:8000/saidas');
   
       if (!response.ok) {
         throw new Error('Erro ao buscar saídas: ' + response.statusText);
       }
   
-      const saidas = await response.json();
+      const saidas_resposta = await response.json(); // Modificado por causa da resposta do pydantic
+      const saidas = saidas_resposta.dados
   
       const tabelaRecebimentos = document.querySelector('.table-container');
       if (!tabelaRecebimentos) {

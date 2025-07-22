@@ -316,19 +316,16 @@
       document.getElementById('formPesquisa').addEventListener('submit', async function (event) {
         event.preventDefault(); // Evita o comportamento padrão do formulário
 
-        const pesquisa = {
-          codigo: document.getElementById('entrada').value,
-        };
+        // Modificado para usar path parameter
+        let codigo = document.getElementById('pesquisa').value.trim()
+        const url_pesquisa = codigo ? 'http://127.0.0.1:8000/saidas/' + codigo: 'http://127.0.0.1:8000/saidas'  
 
         try {
-          const response = await fetch('http://localhost:3000/Saidas', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(pesquisa),
-          });
+          const response = await fetch(url_pesquisa)
 
           if (response.ok) {
-            const pesquisa = await response.json();
+            const pesquisa_response = await response.json(); // Modificado por causa do pydantic
+            const pesquisa = pesquisa_response.dados
 
             if (pesquisa.length === 0) {
               alert('Nenhum saída encontrado!');
