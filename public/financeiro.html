@@ -27,7 +27,7 @@
 
     <!--------------------------------HAMBURGUER------------------------------------------------------------------------------------>
     <div id="sidebar" class="sidebar">
-      <button id="close-btn" class="close-btn">&times;</button>
+      <button id="close-btn" class="close-btn" onclick="toggleForm()">&times;</button>
       <img src="imglogineusuario/senaibranco.svg" alt="" />
       <h3>Menu</h3>
       <ul>
@@ -99,7 +99,7 @@
 
     <div id="formContainer">
       <h2>Novo Recebimento</h2>
-      <button id="close-btn" class="close-btn">&times;</button>
+      <button id="close-btn" class="close-btn" onclick="toggleForm()">&times;</button>
       <form id="registrationForm">
 
         <div class="input-container">
@@ -180,7 +180,8 @@
 
         if (response.ok) {
           alert('recebimento adicionado com sucesso!');
-          formContainer.style.display = "block";
+          formContainer.style.display = "none";
+          fetchVerRecebimentos()
         } else {
           const errorMessage = await response.text();
           alert('Erro: ' + errorMessage);
@@ -340,7 +341,7 @@
   const codigo = document.getElementById('pesquisa').value.trim(); // Obtém o valor do código 
 
   // url com o código caso o código possua um valor
-  const url_pesquisa = codigo ? 'http://127.0.0.1:8000/recebimento/' + codigo : 'http://127.0.0.1:8000/recebimento'
+  const url_pesquisa = codigo ? `http://127.0.0.1:8000/recebimento/${codigo}` : 'http://127.0.0.1:8000/recebimento'
 
   try {
     // Envia a requisição para o backend
@@ -412,7 +413,7 @@
 
   <script src="js/financeiro.js"></script>
   <script src="js/navbar.js"></script>
-  <script src="js/app.js"></script>
+  <!-- <script src="js/app.js"></script> -->
 </body>
 
 </html>

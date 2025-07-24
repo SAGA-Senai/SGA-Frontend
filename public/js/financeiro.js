@@ -8,9 +8,7 @@ function toggleForm() {
     formContainer.style.display = "block";
   }
 }
-
-// não sei o que era isso, mas estava impedindo de apertar o botão de submit do formulário,
-// pois o click só funcionava para o formulário
+// O código abaixo está buscando um item com id inexistente
 // document.getElementById("formContainer").addEventListener("click", (event) => {
 //   const formContent = document.getElementById("formContent");
 //   if (!formContent.contains(event.target)) {

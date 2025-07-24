@@ -126,7 +126,7 @@ document.getElementById('registrationForm').addEventListener('submit', async fun
 
 
   try {
-      const response = await fetch('http://localhost:3000/adicionar-saida', {
+      const response = await fetch('http://127.0.0.1:8000/adicionar-saida', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify(recebimento),
@@ -272,21 +272,21 @@ document.addEventListener('click', function (event) {
 document.getElementById('formPesquisa').addEventListener('submit', async function (event) {
 event.preventDefault(); // Evita o comportamento padrão do formulário
 
-const pesquisa = {
-  codigo: document.getElementById('entrada').value,
-};
+
+const codigo = document.getElementById('pesquisa').value.trim(),
+
+
+saldo_url = codigo ? `http://127.0.0.1:8000/saldos/${codigo}` : 'http://127.0.0.1:8000/saldos' 
 
 try {
-  const response = await fetch('http://localhost:3000/Recebimento', {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify(pesquisa),
-  });
+  const response = await fetch(saldo_url)
+
 
   if (response.ok) {
-    const pesquisa = await response.json();
+    const saldo_json = await response.json();  // modificado por causa do pydantic
+    const saldos = saldo_json.dados
 
-    if (pesquisa.length === 0) {
+    if (saldos.length === 0) {
       alert('Nenhum produto encontrado!');
       return;
     }
@@ -294,18 +294,18 @@ try {
     const tbody = document.querySelector('#table-container');
     tbody.innerHTML = '';
 
-    recebimentos.forEach((recebimento) => {
+    saldos.forEach((saldo) => {
       // Cria uma linha principal
       const mainRow = document.createElement('div');
       mainRow.classList.add('row', 'main-row');
       mainRow.innerHTML = `
-<div class="cell"><strong>Data</strong><span>${recebimento.DATA_RECEB}</span></div>
-<div class="cell"><strong>Código</strong><span>${recebimento.CODIGO}</span></div>
-<div class="cell"><strong>Item</strong><span>${recebimento.NOME_BASICO}</span></div>
-<div class="cell"><strong>Fornecedor</strong><span>${recebimento.FORNECEDOR}</span></div>
-<div class="cell"><strong>Preço Aquisição</strong><span>${recebimento.PRECO_DE_AQUISICAO} R$</span></div>
-<div class="cell"><strong>Quantidade</strong><span>${recebimento.QUANT}</span></div>
-`;
+        <div class="cell"><strong>Item</strong><span>${saldo.nome_basico}</span></div>
+        <div class="cell"><strong>Código</strong><span>${saldo.codigo}</span></div>
+        <div class="cell"><strong>Lote</strong><span>${saldo.lote}</span></div>
+        <div class="cell"><strong>Quantidade Recebida</strong><span>${saldo.quant_recebimento}</span></div>
+        <div class="cell"><strong>Quantidade Saída</strong><span>${saldo.quant_saida}</span></div>
+        <div class="cell"><strong>Saldo</strong><span>${saldo.saldo}</span></div>
+      `;
 
       // Cria a linha de detalhes
       const detailsRow = document.createElement('div');
@@ -314,19 +314,27 @@ try {
       detailsRow.innerHTML = `
 <div class="details-left">
   <div class="image-placeholder">
-    <img src="${recebimento.IMAGEM}" alt="Ícone de imagem">
+    <img src="${saldo.imagem}" alt="Ícone de imagem">
   </div>
 </div>
 <div class="details-right">
-  <div class="detail-item"><strong>Fragilidade:</strong><span>${recebimento.FRAGILIDADE}</span></div>
-  <div class="detail-item"><strong>Fabricante:</strong><span>${recebimento.FABRICANTE}</span></div>
-  <div class="detail-item"><strong>Lote:</strong><span>${recebimento.LOTE}</span></div>
-  <div class="detail-item"><strong>Validade:</strong><span>${recebimento.VALIDADE}</span></div>
-  <div class="detail-item"><strong>Preço Venda:</strong><span>${recebimento.PRECO_DE_VENDA} RS</span></div>
+  <div class="detail-item"><strong>Fragilidade:</strong><span>${saldo.fragilidade}</span></div>
+  <div class="detail-item"><strong>Fabricante:</strong><span>${saldo.fabricante}</span></div>
+  <div class="detail-item"><strong>Lote:</strong><span>${saldo.lote}</span></div>
+  <div class="detail-item"><strong>Validade:</strong><span>${saldo.validade}</span></div>
+  <div class="detail-item"><strong>Preço Venda:</strong><span>${saldo.preco_de_venda} RS</span></div>
 </div>
 `;
 
-      tbody.innerHTML += row;  // Adiciona a linha gerada na tabela
+      // Adiciona um evento de clique à linha principal
+      mainRow.addEventListener('click', () => {
+        detailsRow.style.display = detailsRow.style.display === 'none' ? 'flex' : 'none';
+      });
+
+      // Adiciona as linhas à tabela
+      tbody.appendChild(mainRow);
+      tbody.appendChild(detailsRow);
+
     });
 
 

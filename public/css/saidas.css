@@ -422,6 +422,17 @@ select:hover {
     box-shadow: 1px 1px 1px 1px #e2b500;
 }
 
+.input-container input:focus,
+.input-container select:focus {
+    border-color: #FFCC00;
+    z-index: 911199;
+    box-shadow: 1px 1px 1px 1px #e2b500;
+}
+
+.input-container select {
+    color: #000;
+}
+
 /* Estilos das labels */
 #registrationForm label {
     position: absolute;

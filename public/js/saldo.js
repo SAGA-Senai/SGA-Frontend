@@ -3,14 +3,15 @@
   //--------------------------------------------------------------Aparecer os saldos na tela
   async function fetchVerSaldos() {
     try {
-      const response = await fetch('/Saldos');
+      const response = await fetch('http://127.0.0.1:8000/saldos');
   
       if (!response.ok) {
         throw new Error('Erro ao buscar saldos: ' + response.statusText);
       }
   
-      const saldos = await response.json();
-  
+      const saldos_response = await response.json();
+      const saldos = saldos_response.dados // Modificado por causa do Pydantic
+
       const tabelaRecebimentos = document.querySelector('.table-container');
       if (!tabelaRecebimentos) {
         throw new Error('Elemento com a classe "table-container" não encontrado no DOM.');
@@ -22,16 +23,16 @@
         tabelaRecebimentos.innerHTML = '<div class="nenhum-recebimento">Nenhum saldo encontrado</div>';
         return;
       }
-  
+
       const saldosAcumulados = {}; // Armazenará os saldos por produto e lote
   
       saldos.forEach((saldo) => {
-        const key = `${saldo.CODIGO}-${saldo.LOTE}`; // Chave para identificar produto e lote
+        const key = `${saldo.codigo}-${saldo.lote}`; // Chave para identificar produto e lote
         if (!saldosAcumulados[key]) {
           saldosAcumulados[key] = {
-            NOME_BASICO: saldo.NOME_BASICO,
-            CODIGO: saldo.CODIGO,
-            LOTE: saldo.LOTE,
+            NOME_BASICO: saldo.nome_basico,
+            CODIGO: saldo.codigo,
+            LOTE: saldo.lote,
             QUANT_RECEBIMENTO: 0,
             QUANT_SAIDA: 0,
             saldo: 0
@@ -39,8 +40,8 @@
         }
   
         // Converte as quantidades para números antes de somar
-        const quantRecebida = Number(saldo.QUANT_RECEBIMENTO);
-        const quantSaida = Number(saldo.QUANT_SAIDA);
+        const quantRecebida = Number(saldo.quant_recebimento);
+        const quantSaida = Number(saldo.quant_saida);
   
         // Atualiza o saldo acumulado (Recebimento - Saída)
         saldosAcumulados[key].QUANT_RECEBIMENTO += quantRecebida;

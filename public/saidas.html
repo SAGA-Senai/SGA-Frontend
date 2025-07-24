@@ -135,8 +135,8 @@
 
 
         <div class="input-container">
-          <input type="date" id="receiving_date" placeholder=" " required />
-          <label for="receiving_date">Data de saída</label>
+          <input type="date" id="issue_date" placeholder=" " required />
+          <label for="issue_date">Data de saída</label>
         </div>
 
         <button type="submit" id="submitButton">
@@ -150,43 +150,43 @@
 
   <script>
 
+    // submit já está sendo processado no saidas.js
+    // document.getElementById('registrationForm').addEventListener('submit', async function (event) {
+    //   event.preventDefault();
 
-    document.getElementById('registrationForm').addEventListener('submit', async function (event) {
-      event.preventDefault();
+    //   const usuarioLogado = JSON.parse(localStorage.getItem('usuarioLogado'));
 
-      const usuarioLogado = JSON.parse(localStorage.getItem('usuarioLogado'));
+    //   const formContainer = document.getElementById("formContainer");
 
-      const formContainer = document.getElementById("formContainer");
-
-      const recebimento = {
-        fornecedor: document.getElementById('productFont').value,
-        codigo: document.getElementById('codigo').value,
-        quantidade: document.getElementById('quantityReceived').value,
-        numbLote: document.getElementById('numbLote').value,
-        dataRecebimento: document.getElementById('dataRecebimento').value,
-        inseridoPor: usuarioLogado.tipo === 'professor' ? SNProfessor : usuarioLogado.email,
-      };
+    //   const recebimento = {
+    //     fornecedor: document.getElementById('product_font').value,
+    //     codigo: document.getElementById('product_code').value,
+    //     quantidade: document.getElementById('quantity_received').value,
+    //     numbLote: document.getElementById('numb_lote').value,
+    //     dataRecebimento: document.getElementById('issue_date').value,
+    //     // inseridoPor: usuarioLogado.tipo === 'professor' ? SNProfessor : usuarioLogado.email, // removido enquanto trabalho no back
+    //   };
 
 
 
-      try {
-        const response = await fetch('http://localhost:3000/adicionar-saida', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify(recebimento),
-        });
+    //   try {
+    //     const response = await fetch('http://localhost:3000/adicionar-saida', {
+    //       method: 'POST',
+    //       headers: { 'Content-Type': 'application/json' },
+    //       body: JSON.stringify(recebimento),
+    //     });
 
-        if (response.ok) {
-          alert('Saída adicionada com sucesso!');
-          formContainer.style.display = "block";
-        } else {
-          const errorMessage = await response.text();
-          alert('Erro: ' + errorMessage);
-        }
-      } catch (error) {
-        alert('Erro ao adicionar saída ' + error.message);
-      }
-    });
+    //     if (response.ok) {
+    //       alert('Saída adicionada com sucesso!');
+    //       formContainer.style.display = "block";
+    //     } else {
+    //       const errorMessage = await response.text();
+    //       alert('Erro: ' + errorMessage);
+    //     }
+    //   } catch (error) {
+    //     alert('Erro ao adicionar saída ' + error.message);
+    //   }
+    // });
 
   </script>
 
@@ -318,17 +318,17 @@
 
         // Modificado para usar path parameter
         let codigo = document.getElementById('pesquisa').value.trim()
-        const url_pesquisa = codigo ? 'http://127.0.0.1:8000/saidas/' + codigo: 'http://127.0.0.1:8000/saidas'  
+        const url_pesquisa = codigo ? `http://127.0.0.1:8000/saidas/${codigo}` : 'http://127.0.0.1:8000/saidas'  
 
         try {
           const response = await fetch(url_pesquisa)
 
           if (response.ok) {
             const pesquisa_response = await response.json(); // Modificado por causa do pydantic
-            const pesquisa = pesquisa_response.dados
+            const saidas = pesquisa_response.dados
 
-            if (pesquisa.length === 0) {
-              alert('Nenhum saída encontrado!');
+            if (saidas.length === 0) {
+              document.querySelector('#table-container').innerHTML = '<p>Nenhum produto encontrado!</p>';
               return;
             }
 
@@ -340,12 +340,12 @@
               const mainRow = document.createElement('div');
               mainRow.classList.add('row', 'main-row');
               mainRow.innerHTML = `
-        <div class="cell"><strong>Data</strong><span>${saida.DATA_RECEB}</span></div>
-        <div class="cell"><strong>Código</strong><span>${saida.CODIGO}</span></div>
-        <div class="cell"><strong>Item</strong><span>${saida.NOME_BASICO}</span></div>
-        <div class="cell"><strong>Fornecedor</strong><span>${saida.FORNECEDOR}</span></div>
-        <div class="cell"><strong>Preço Aquisição</strong><span>${saida.PRECO_DE_AQUISICAO} R$</span></div>
-        <div class="cell"><strong>Quantidade</strong><span>${saida.QUANT}</span></div>
+        <div class="cell"><strong>Data</strong><span>${saida.data_saida}</span></div>
+        <div class="cell"><strong>Código</strong><span>${saida.codigo}</span></div>
+        <div class="cell"><strong>Item</strong><span>${saida.nome_basico}</span></div>
+        <div class="cell"><strong>Fornecedor</strong><span>${saida.fornecedor}</span></div>
+        <div class="cell"><strong>Preço Aquisição</strong><span>${saida.preco_de_aquisicao} R$</span></div>
+        <div class="cell"><strong>Quantidade</strong><span>${saida.quant}</span></div>
       `;
 
               // Cria a linha de detalhes
@@ -355,21 +355,28 @@
               detailsRow.innerHTML = `
         <div class="details-left">
           <div class="image-placeholder">
-            <img src="${saida.IMAGEM}" alt="Ícone de imagem">
+            <img src="${saida.imagem}" alt="Ícone de imagem">
           </div>
         </div>
         <div class="details-right">
-          <div class="detail-item"><strong>Fragilidade:</strong><span>${saida.FRAGILIDADE}</span></div>
-          <div class="detail-item"><strong>Fabricante:</strong><span>${saida.FABRICANTE}</span></div>
-          <div class="detail-item"><strong>Lote:</strong><span>${saida.LOTE}</span></div>
-          <div class="detail-item"><strong>Validade:</strong><span>${saida.VALIDADE}</span></div>
-          <div class="detail-item"><strong>Preço Venda:</strong><span>${saida.PRECO_DE_VENDA} RS</span></div>
+          <div class="detail-item"><strong>Fragilidade:</strong><span>${saida.fragilidade}</span></div>
+          <div class="detail-item"><strong>Fabricante:</strong><span>${saida.fabricante}</span></div>
+          <div class="detail-item"><strong>Lote:</strong><span>${saida.lote}</span></div>
+          <div class="detail-item"><strong>Validade:</strong><span>${saida.validade}</span></div>
+          <div class="detail-item"><strong>Preço Venda:</strong><span>${saida.preco_de_venda} RS</span></div>
         </div>
       `;
 
-              tbody.innerHTML += row;  // Adiciona a linha gerada na tabela
-            });
+        // Adiciona um evento de clique à linha principal
+        mainRow.addEventListener('click', () => {
+          detailsRow.style.display = detailsRow.style.display === 'none' ? 'flex' : 'none';
+        });
 
+        // Adiciona as linhas à tabela
+        tbody.appendChild(mainRow);
+        tbody.appendChild(detailsRow);
+
+      });
 
           } else {
             const errorMessage = await response.text();

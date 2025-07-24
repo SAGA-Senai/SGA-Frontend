@@ -31,7 +31,7 @@ function toggleForm() {
   
     // Fetch fornecedores para preencher o select
     async function fetchFornecedores() {
-      const response = await fetch("http://localhost:3000/fornecedores");
+      const response = await fetch("http://127.0.0.1:8000/fornecedores");
       const fornecedores = await response.json();
   
       const fornecedorSelect = document.getElementById("product_font");
@@ -77,23 +77,23 @@ function toggleForm() {
     registrationForm.addEventListener("submit", async (e) => {
       e.preventDefault();
   
-      const data = document.getElementById("receiving_date").value;
+      const data = document.getElementById("issue_date").value;
       const quantidade = document.getElementById("quantity_received").value;
       const codigo = document.getElementById("product_code").value;
       const lote = document.getElementById("numb_lote").value;
       const fornecedor = document.getElementById("product_font").value;
   
-      const response = await fetch("http://localhost:3000/adicionar-saida", {
+      const response = await fetch("http://127.0.0.1:8000/adicionar-saida", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
         body: JSON.stringify({
-          fornecedor,
-          codigo,
-          quantidade,
+          fornecedor: fornecedor,
+          codigo: codigo,
+          quantidade: quantidade,
           numbLote: lote,
-          dataRecebimento: data,
+          data_saida: data,
         }),
       });
   
@@ -101,6 +101,7 @@ function toggleForm() {
         alert("Saída registrada com sucesso!");
         registrationForm.reset();
         formContainer.style.display = "none";
+        fetchVerSaidas()
       } else {
         const error = await response.json();
         alert("Erro ao registrar saída: " + error.message);
@@ -155,8 +156,9 @@ function toggleForm() {
 // Função para buscar fornecedores para um produto específico
 async function fetchFornecedoresPorProduto(codigo) {
     try {
-        const response = await fetch(`http://localhost:3000/fornecedores?codigo=${codigo}`);
-        const fornecedores = await response.json();
+        const response = await fetch(`http://127.0.0.1:8000/fornecedores/${codigo}`); 
+        const fornecedores_data = await response.json();
+        const fornecedores = fornecedores_data.dados
 
         const fornecedorSelect = document.getElementById("product_font");
         fornecedorSelect.innerHTML = '<option value="" disabled selected>Selecione o fornecedor</option>';
@@ -176,8 +178,9 @@ async function fetchFornecedoresPorProduto(codigo) {
 // Função para buscar os lotes de um fornecedor e produto específico
 async function fetchLotes(fornecedorId, codigo) {
     try {
-        const response = await fetch(`http://localhost:3000/lotes?fornecedor=${fornecedorId}&codigo=${codigo}`);
-        const lotes = await response.json();
+        const response = await fetch(`http://127.0.0.1:8000/lotes?fornecedor=${fornecedorId}&codigo=${codigo}`);
+        const lotes_response = await response.json(); // Modificado por causa do pydantic
+        const lotes = lotes_response.dados
 
         const loteSelect = document.getElementById("numb_lote");
         loteSelect.innerHTML = '<option value="" disabled selected>Selecione o lote</option>';
@@ -224,12 +227,12 @@ async function fetchLotes(fornecedorId, codigo) {
         const mainRow = document.createElement('div');
         mainRow.classList.add('row', 'main-row');
         mainRow.innerHTML = `
-          <div class="cell"><strong>Data</strong><span>${saida.DATA_SAIDA}</span></div>
-          <div class="cell"><strong>Código</strong><span>${saida.CODIGO}</span></div>
-          <div class="cell"><strong>Item</strong><span>${saida.NOME_BASICO}</span></div>
-          <div class="cell"><strong>Fornecedor</strong><span>${saida.FORNECEDOR}</span></div>
-          <div class="cell"><strong>Preço Aquisição</strong><span>${saida.PRECO_DE_AQUISICAO} R$</span></div>
-          <div class="cell"><strong>Quantidade</strong><span>${saida.QUANT}</span></div>
+          <div class="cell"><strong>Data</strong><span>${saida.data_saida}</span></div>
+          <div class="cell"><strong>Código</strong><span>${saida.codigo}</span></div>
+          <div class="cell"><strong>Item</strong><span>${saida.nome_basico}</span></div>
+          <div class="cell"><strong>Fornecedor</strong><span>${saida.fornecedor}</span></div>
+          <div class="cell"><strong>Preço Aquisição</strong><span>${saida.preco_de_aquisicao} R$</span></div>
+          <div class="cell"><strong>Quantidade</strong><span>${saida.quant}</span></div>
         `;
   
         // Cria a linha de detalhes
@@ -239,15 +242,15 @@ async function fetchLotes(fornecedorId, codigo) {
         detailsRow.innerHTML = `
           <div class="details-left">
             <div class="image-placeholder">
-              <img src="${saida.IMAGEM}" alt="Ícone de imagem">
+              <img src="${saida.imagem}" alt="Ícone de imagem">
             </div>
           </div>
           <div class="details-right">
-            <div class="detail-item"><strong>Fragilidade:</strong><span>${saida.FRAGILIDADE}</span></div>
-            <div class="detail-item"><strong>Fabricante:</strong><span>${saida.FABRICANTE}</span></div>
-            <div class="detail-item"><strong>Lote:</strong><span>${saida.LOTE}</span></div>
-            <div class="detail-item"><strong>Validade:</strong><span>${saida.VALIDADE}</span></div>
-            <div class="detail-item"><strong>Preço Venda:</strong><span>${saida.PRECO_DE_VENDA} RS</span></div>
+            <div class="detail-item"><strong>Fragilidade:</strong><span>${saida.fragilidade}</span></div>
+            <div class="detail-item"><strong>Fabricante:</strong><span>${saida.fabricante}</span></div>
+            <div class="detail-item"><strong>Lote:</strong><span>${saida.lote}</span></div>
+            <div class="detail-item"><strong>Validade:</strong><span>${saida.validade}</span></div>
+            <div class="detail-item"><strong>Preço Venda:</strong><span>${saida.preco_de_venda} RS</span></div>
           </div>
         `;
   
