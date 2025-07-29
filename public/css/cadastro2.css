@@ -213,7 +213,8 @@ section.cadastro .flex .parte-bolinhas .container {
 }
 
 #fabricante,
-#fornecedor,
+#unidade,
+#precoVenda,
 .inserir-info .container textarea {
     width: 100%;
     padding: 2.3%;
