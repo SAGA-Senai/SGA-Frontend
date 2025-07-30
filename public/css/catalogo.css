@@ -514,4 +514,8 @@ select {
     #cabecalho-table{
         font-size: 0.7vh;
     }
+    #tabela-estoque tr,
+    td {
+        font-size: 0.7vh;
+    }
 }
