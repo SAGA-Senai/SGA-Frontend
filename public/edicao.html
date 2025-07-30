@@ -162,12 +162,66 @@
 
     <!-- ----------------------------------------------------------------------------------------------------------------------------- -->
 
-    <!-- <div class="cabeca">Editar/Excluir Itens</div> -->
-
-    <div class="div_pesquisa">
-        <button id="filtrar"><img src="imagens/filtro.svg" alt="" id="fil">Filtrar</button>
-        <input type="text" id="pesquisa">
-        <button id="pesquisar">Pesquisar <img src="imagens/lupa.svg" alt="" id="pes"></button>
+    <div id="barradebusca">
+        <div id="filtrarcontainer">
+            <div class="div_pesquisa">
+                <button id="filtrar"><img src="imagens/filtro.svg" alt="Filtro" id="fil">Filtrar</button>
+            </div>
+            <div id="caixote">
+                <form id="formFiltrar">
+                    <div id="ajeitar">
+                        <div id="subajeitada">
+                            <span>Filtros</span>
+                            <div id="textinho" onclick="limparFiltros()">
+                                Limpar Filtros
+                            </div>
+                        </div>
+                        <div id="dropdown" class="dentrodropdown">
+                            <label for="categoria">Categoria:</label>
+                            <select id="categoria" name="categoria">
+                                <option value="">Selecione Categoria</option>
+                                <!-- Adicione as opções dinamicamente via JavaScript -->
+                            </select>
+                            <label for="fabricante">Fabricante:</label>
+                            <select id="fabricante" name="fabricante">
+                                <option value="">Selecione Fabricante</option>
+                                <!-- Adicione os fabricantes dinamicamente via JavaScript -->
+                            </select>
+                        </div>
+                        <!-- <div id="inputdata">
+                            <label>Data:</label>
+                            <div id="ajeitardata">
+                                <input type="date" id="dedata" name="dedata" class="datasize">
+                                à
+                                <input type="date" id="atedata" name="atedata" class="datasize">
+                            </div>
+                        </div> -->
+                        <div id="ordernaritem">
+                            <label>Ordenar Item:</label>
+                            <div id="ordenar">  
+                                <select id="ordenacao">
+                                    <option value="">Order Por:</option>
+                                    <option value="az">A - Z</option>
+                                    <option value="za">Z - A</option>
+                                    <option value="maisRecente">Mais Recente</option>
+                                    <option value="maisAntigo">Mais Antigo</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                    <button type="submit" id="filtrarBtn">Filtrar</button>
+                </form>
+            </div>
+        </div>
+    
+  
+        <!-- acabou as mudanças -->
+        <form id="formPesquisa">
+            <div class="div_pesquisa">
+                <input type="text" id="codigo">
+                <button id="pesquisar">Pesquisar <img src="imagens/lupa.svg" alt="" id="pes"></button>
+            </div>
+        </form>
     </div>
 
     <!-- ----------------------------------------------------------------------------------------------------------------------------- -->
