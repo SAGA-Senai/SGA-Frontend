@@ -243,6 +243,10 @@ transform: scale(1.05);
     font-size: 1.8vh;
     padding: 4px 1px;
   }
+  #logoutButton {
+    width: 3vw;
+    margin-top: -2.5vh;
+  }
 }
 /* ---------------------------------------------------------------------------- */
 /* PARA CELULAR */
@@ -291,5 +295,8 @@ transform: scale(1.05);
   .dropdown-content a {
     font-size: 1.4vh;
     padding: 4px 1px;
+  }
+  #logoutButton {
+    width: 5vw;
   }
 }
