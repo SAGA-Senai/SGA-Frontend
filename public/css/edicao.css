@@ -1074,7 +1074,8 @@ td {
     .content-table{
         width: 100%;
     }
-    #cabecalho-table{
+     #tabela-estoque tr,
+    td {
         font-size: 0.7vh;
     }
 }

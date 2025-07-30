@@ -833,6 +833,12 @@ select:hover option:hover {
     #submitButton h3{
         margin-left: 25%;
     }
+    .table-container {
+        height: 45vh;
+    }
+    .footer img {
+        margin-top: 16%;
+    }
 }
 
 /* ---------------------------------------------------------------------------- */
@@ -917,5 +923,17 @@ select:hover option:hover {
     #submitButton h3{
         margin-left: 12%;
         font-weight: 400;
+    }
+    .row {
+        padding: 5px 20px;
+    }
+    strong {
+        font-size: 1vh;
+    }
+    .cell span {
+        font-size: 1vh;
+    }
+    .footer img {
+        margin-top: 40%;
     }
 }

@@ -1000,4 +1000,7 @@ select #numb_lote option{
         margin-left: 12%;
         font-weight: 400;
     }
+    .footer img {
+        margin-top: 25%;
+    }
 }

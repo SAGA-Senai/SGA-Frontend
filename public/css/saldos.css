@@ -722,4 +722,16 @@ select:hover option:hover {
     .title {
         font-size: 1.7vh;
     }
+    .row {
+        padding: 5px 20px;
+    }
+    strong {
+        font-size: 1vh;
+    }
+    .cell span {
+        font-size: 1vh;
+    }
+    .footer img {
+        margin-top: 16%;
+    }
 }
