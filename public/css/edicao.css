@@ -1025,6 +1025,9 @@ td {
     #caixote {
         height: 45vh;
     }
+    .titulo {
+        margin-left: -2.3vw;
+    }
 }
 
 /* ---------------------------------------------------------------------------- */
@@ -1043,6 +1046,19 @@ td {
     }
     #dropdown {
         margin-left: 13%;
+    }
+    .popup-content {
+        width: 50vw;
+    }
+    .titulo {
+        width: 50vw;
+        margin-left: -4.5vw;
+    }
+    .popup button {
+        width: 40%;
+    }
+    .salvar_edicao {
+        font-size: 2vh;
     }
 }
 
@@ -1077,5 +1093,43 @@ td {
      #tabela-estoque tr,
     td {
         font-size: 0.7vh;
+    }
+    .popup-content {
+        width: 70vw;
+    }
+    .titulo {
+        width: 70vw;
+        margin-left: -7vw;
+    }
+    .popup button {
+        width: 47%;
+    }
+    .conteudo {
+        width: 70vw;
+        height: 96.3vh;
+    }
+    .titulo-edicao {
+        font-size: 1.5vh;
+    }
+    .nome_b, .nome_m, .cod, .categoria, .descricao, .fabricante {
+        font-size: 1vh;
+    }
+    .informacoesbasicas {
+        height: 27vh;
+    }
+    .observacao, .unidade, .preco_v, .fragilidade {
+        font-size: 1vh;
+    }
+    .largura, .altura, .profundidade, .peso {
+        font-size: 1vh;
+    }
+    .rua, .coluna, .andar {
+        font-size: 1vh;
+    }
+    .salvar_edicao {
+        font-size: 1.5vh;
+    }
+    .input {
+        font-size: 1vh;
     }
 }
