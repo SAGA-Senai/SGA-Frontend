@@ -62,9 +62,34 @@
           <div class="cell"><strong>Saldo</strong><span>${saldo.saldo}</span></div>
         `;
   
-        // Adiciona a linha à tabela
-        tabelaRecebimentos.appendChild(mainRow);
-      });
+        // Cria a linha de detalhes
+        const detailsRow = document.createElement('div');
+        detailsRow.classList.add('row', 'details-row');
+        detailsRow.style.display = 'none'; // Esconde inicialmente
+        detailsRow.innerHTML = `
+          <div class="details-left">
+            <div class="image-placeholder">
+              <img src="${saldo.imagem}" alt="Ícone de imagem">
+            </div>
+          </div>
+          <div class="details-right">
+            <div class="detail-item"><strong>Fragilidade:</strong><span>${saldo.fragilidade}</span></div>
+            <div class="detail-item"><strong>Fabricante:</strong><span>${saldo.fabricante}</span></div>
+            <div class="detail-item"><strong>Lote:</strong><span>${saldo.lote}</span></div>
+            <div class="detail-item"><strong>Validade:</strong><span>${saldo.validade}</span></div>
+            <div class="detail-item"><strong>Preço Venda:</strong><span>${saldo.preco_de_venda} RS</span></div>
+          </div>
+          `;
+
+          // Adiciona um evento de clique à linha principal
+          mainRow.addEventListener('click', () => {
+            detailsRow.style.display = detailsRow.style.display === 'none' ? 'flex' : 'none';
+          });
+
+          // Adiciona as linhas à tabela
+          tabelaRecebimentos.appendChild(mainRow);
+          tabelaRecebimentos.appendChild(detailsRow);
+          });
     } catch (error) {
       alert('Erro ao buscar saldos: ' + error.message);
     }

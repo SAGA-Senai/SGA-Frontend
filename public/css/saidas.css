@@ -93,6 +93,10 @@ body {
     transform: scale(1.03);
 }
 
+#dropdown select option{
+    color: white;
+}
+
 textarea:focus,
 input:focus,
 select:focus {
