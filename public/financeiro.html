@@ -181,7 +181,6 @@
         if (response.ok) {
           alert('recebimento adicionado com sucesso!');
           formContainer.style.display = "none";
-          fetchVerRecebimentos()
         } else {
           const errorMessage = await response.text();
           alert('Erro: ' + errorMessage);
@@ -189,6 +188,7 @@
       } catch (error) {
         alert('Erro ao adicionar recebimento ' + error.message);
       }
+      fetchData(); // recarrega os dados e monta a tabela com o dado adicionado
     });
 
   </script>

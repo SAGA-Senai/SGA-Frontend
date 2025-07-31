@@ -93,12 +93,26 @@ async function fetchData() {
       if (!fabricantes.includes(recebimento.FABRICANTE)) { // salva os fabricantes
         fabricantes.push(recebimento.FABRICANTE);
       };
-      if (!categorias.includes(recebimento.CATEGORIA)) { // salva as categorias
+      if (!categorias.includes(recebimento.CATEGORIA) && recebimento.CATEGORIA) { // salva as categorias
         categorias.push(recebimento.CATEGORIA);
       };
     });
+
+    // organiza e adiciona à página os fabricantes
     fabricantes.sort();
-    preencherSelect();
+    fabricantes.forEach(fabricante => {
+      const option = document.createElement("option");
+      option.value = fabricante;
+      option.textContent = fabricante;
+      fabricanteSelect.appendChild(option)
+    });
+    categorias.sort();
+    categorias.forEach(categoria => {
+      const option = document.createElement("option");
+      option.value = categoria;
+      option.textContent = categoria;
+      categoriaSelect.appendChild(option)
+    });
 
     montarTabela();
     
@@ -107,14 +121,7 @@ async function fetchData() {
   };
 };
 
-function preencherSelect() {
-  fabricantes.forEach(fabricante => {
-    const option = document.createElement("option");
-    option.value = fabricante;
-    option.textContent = fabricante;
-    fabricanteSelect.appendChild(option)
-  });
-};
+
 
 // arrumar datas do banco de dados para o formato correto
 function parseDataBr(dataStr) {
@@ -155,18 +162,18 @@ async function montarTabela() {
   tabelaData.forEach(recebimento => {
     // filtra os itens caso necessário
     if (tabelaOpts.categoria && tabelaOpts.categoria != recebimento.CATEGORIA) {
-      return // faz a função pular para o próximo item, igual um continue
-    }
+      return; // faz a função pular para o próximo item, igual um continue
+    };
     if (tabelaOpts.fabricante && tabelaOpts.fabricante != recebimento.FABRICANTE) {
-      return
-    }
+      return;
+    };
     if (
       tabelaOpts.datas.length > 0 &&
       (tabelaOpts.datas[0] > parseDataBr(recebimento.DATA_RECEB) ||
       tabelaOpts.datas[1] < parseDataBr(recebimento.DATA_RECEB))
     ) {
-      return
-    }
+      return;
+    };
 
     // Cria uma linha principal
     const mainRow = document.createElement('div');

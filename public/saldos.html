@@ -103,55 +103,6 @@
          
     </div>
 
-<!--  SCRIPT QUE LIGA OS INPUT AO BACK-END  -->
-
-<script>
-  
-document.getElementById('registrationForm').addEventListener('submit', async function (event) {
-  event.preventDefault();
-
-  const usuarioLogado = JSON.parse(localStorage.getItem('usuarioLogado'));
-
-  const formContainer = document.getElementById("formContainer");
-
-  const recebimento = {
-      fornecedor: document.getElementById('productFont').value,
-      codigo: document.getElementById('codigo').value,
-      quantidade: document.getElementById('quantityReceived').value,
-      numbLote: document.getElementById('numbLote').value,
-      dataRecebimento: document.getElementById('dataRecebimento').value,
-      inseridoPor: usuarioLogado.tipo === 'professor' ? SNProfessor : usuarioLogado.email,
-  };
-
-
-
-  try {
-      const response = await fetch('http://127.0.0.1:8000/adicionar-saida', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify(recebimento),
-      });
-
-      if (response.ok) {
-          alert('Saída adicionada com sucesso!');
-          formContainer.style.display = "block";
-      } else {
-          const errorMessage = await response.text();
-          alert('Erro: ' + errorMessage);
-      }
-  } catch (error) {
-      alert('Erro ao adicionar saída ' + error.message);
-  }
-});
-
-</script>
-
-
-
-
-
-
-
   <!----------------------------------------------------------------------------------------------------------------------------------------->
 
 
@@ -171,45 +122,29 @@ document.getElementById('registrationForm').addEventListener('submit', async fun
             <div id="dropdown" class="dentrodropdown">
               <select id="categoria">
                 <option value="Categoria">Categoria</option>
-                <option value="papelaria">Papelaria</option>
-                <option value="escritorio">Escritório</option>
-                <option value="eletronicos">Eletrônicos</option>
-                <option value="armazenagem">Armazenagem</option>
+
               </select>
               <select id="fornecedor">
                 <option value="">Fornecedor</option>
-                <option value="papelDistrib">Papel Distrib.</option>
-                <option value="lapisCo">Lápis&Co</option>
-                <option value="bicDistrib">Bic Distrib</option>
-                <option value="escolarLTDA">Escolar LTDA</option>
-                <option value="kalunga">Kalunga</option>
-                <option value="embalagensBrasil">Embalagens Brasil</option>
               </select>
               <select id="fabricante">
                 <option value="">Fabricante</option>
-                <option value="tilibra">Tilibra</option>
-                <option value="faberCastell">Faber-Castell</option>
-                <option value="leoLeo">Leo&Leo</option>
-                <option value="bic">Bic</option>
-                <option value="sony">Sony</option>
-                <option value="duracell">Duracell</option>
-                <option value="hp">HP</option>
-                <option value="vacuPack">VacuPack</option>
               </select>
 
             </div>
 
-            <div id="inputdata">Data
+            <!-- Caso for usar para validade a estrutura ainda está aqui -->
+            <!-- <div id="inputdata">Data
               <div id="ajeitardata">
                 <input type="date" id="dedata" class="datasize"></input>
                 à
                 <input type="date" id="atedata" class="datasize"></input>
               </div>
-            </div>
+            </div> -->
             <div id="ordernaritem">Ordenar Item
               <div id="botoes">
-                <button>A a Z</button>
-                <button>Z a A</button>
+                <button id="sortAz">A a Z</button>
+                <button id="sortZa">Z a A</button>
               </div>
             </div>
           </div>
@@ -378,7 +313,7 @@ try {
 
   <script src="js/saldo.js"></script>
   <script src="js/navbar.js"></script>
-  <script src="js/app.js"></script>
+  <!-- <script src="js/app.js"></script> -->
 </body>
 
 </html>

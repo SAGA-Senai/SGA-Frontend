@@ -242,6 +242,12 @@ select {
 #textinho{
     color: #FFCC00;
 }
+#textinho:hover {
+    cursor: pointer;
+    background-color: #FFCC0022;
+    padding: 2px;
+}
+
 #dropdown {
     display: none;
     position: relative;
@@ -677,7 +683,7 @@ select #numb_lote option{
     height: auto;
     color: #FFCC00;
     margin-top: -65.7vh;
-    cursor: pointer;
+    /* cursor: pointer; */
     justify-content: center;
     /* Centraliza os elementos horizontalmente */
     align-items: center;
