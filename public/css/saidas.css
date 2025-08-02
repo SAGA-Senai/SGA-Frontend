@@ -93,6 +93,10 @@ body {
     transform: scale(1.03);
 }
 
+#dropdown select option{
+    color: white;
+}
+
 textarea:focus,
 input:focus,
 select:focus {
@@ -238,6 +242,12 @@ select {
 #textinho{
     color: #FFCC00;
 }
+#textinho:hover {
+    cursor: pointer;
+    background-color: #FFCC0022;
+    padding: 2px;
+}
+
 #dropdown {
     display: none;
     position: relative;
@@ -420,6 +430,17 @@ select:hover {
     border-color: #FFCC00;
     z-index: 911199;
     box-shadow: 1px 1px 1px 1px #e2b500;
+}
+
+.input-container input:focus,
+.input-container select:focus {
+    border-color: #FFCC00;
+    z-index: 911199;
+    box-shadow: 1px 1px 1px 1px #e2b500;
+}
+
+.input-container select {
+    color: #000;
 }
 
 /* Estilos das labels */
@@ -662,7 +683,7 @@ select #numb_lote option{
     height: auto;
     color: #FFCC00;
     margin-top: -65.7vh;
-    cursor: pointer;
+    /* cursor: pointer; */
     justify-content: center;
     /* Centraliza os elementos horizontalmente */
     align-items: center;

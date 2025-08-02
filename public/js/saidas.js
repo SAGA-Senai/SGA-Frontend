@@ -10,8 +10,10 @@ function toggleForm() {
   }
   document.getElementById("formContainer").addEventListener("click", (event) => {
     const formContent = document.getElementById("formContent");
-    if (!formContent.contains(event.target)) {
-      document.getElementById("formContainer").style.display = "none";
+    if (formContent) {
+      if (!formContent.contains(event.target)) {
+        document.getElementById("formContainer").style.display = "none";
+      }
     }
   });
   
@@ -31,7 +33,7 @@ function toggleForm() {
   
     // Fetch fornecedores para preencher o select
     async function fetchFornecedores() {
-      const response = await fetch("http://localhost:3000/fornecedores");
+      const response = await fetch("http://127.0.0.1:8000/fornecedores");
       const fornecedores = await response.json();
   
       const fornecedorSelect = document.getElementById("product_font");
@@ -43,21 +45,21 @@ function toggleForm() {
       });
     }
   
-    // Fetch lotes para preencher o select
-    async function fetchLotes(fornecedorId) {
-      const response = await fetch(`http://localhost:3000/lotes?fornecedor=${fornecedorId}`);
-      const lotes = await response.json();
+    // // Fetch lotes para preencher o select
+    // async function fetchLotes(fornecedorId) {
+    //   const response = await fetch(`http://localhost:3000/lotes?fornecedor=${fornecedorId}`);
+    //   const lotes = await response.json();
   
-      const loteSelect = document.getElementById("numb_lote");
-      loteSelect.innerHTML = '<option value="" disabled selected>Selecione o lote</option>'; // Limpa as opções
-      lotes.forEach((lote) => {
-        const option = document.createElement("option");
-        option.value = lote.id; // ou outro campo que represente o ID do lote
-        option.textContent = `Lote ${lote.id} - Estoque: ${lote.estoqueDisponivel}`;
-        option.setAttribute("data-quantity", lote.estoqueDisponivel);
-        loteSelect.appendChild(option);
-      });
-    }
+    //   const loteSelect = document.getElementById("numb_lote");
+    //   loteSelect.innerHTML = '<option value="" disabled selected>Selecione o lote</option>'; // Limpa as opções
+    //   lotes.forEach((lote) => {
+    //     const option = document.createElement("option");
+    //     option.value = lote.id; // ou outro campo que represente o ID do lote
+    //     option.textContent = `Lote ${lote.id} - Estoque: ${lote.estoqueDisponivel}`;
+    //     option.setAttribute("data-quantity", lote.estoqueDisponivel);
+    //     loteSelect.appendChild(option);
+    //   });
+    // }
   
     document.getElementById("product_font").addEventListener("change", (e) => {
       fetchLotes(e.target.value);
@@ -77,23 +79,23 @@ function toggleForm() {
     registrationForm.addEventListener("submit", async (e) => {
       e.preventDefault();
   
-      const data = document.getElementById("receiving_date").value;
+      const data = document.getElementById("issue_date").value;
       const quantidade = document.getElementById("quantity_received").value;
       const codigo = document.getElementById("product_code").value;
       const lote = document.getElementById("numb_lote").value;
       const fornecedor = document.getElementById("product_font").value;
   
-      const response = await fetch("http://localhost:3000/adicionar-saida", {
+      const response = await fetch("http://127.0.0.1:8000/adicionar-saida", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
         body: JSON.stringify({
-          fornecedor,
-          codigo,
-          quantidade,
+          fornecedor: fornecedor,
+          codigo: codigo,
+          quantidade: quantidade,
           numbLote: lote,
-          dataRecebimento: data,
+          data_saida: data,
         }),
       });
   
@@ -101,6 +103,7 @@ function toggleForm() {
         alert("Saída registrada com sucesso!");
         registrationForm.reset();
         formContainer.style.display = "none";
+        fetchVerSaidas()
       } else {
         const error = await response.json();
         alert("Erro ao registrar saída: " + error.message);
@@ -155,8 +158,18 @@ function toggleForm() {
 // Função para buscar fornecedores para um produto específico
 async function fetchFornecedoresPorProduto(codigo) {
     try {
-        const response = await fetch(`http://localhost:3000/fornecedores?codigo=${codigo}`);
-        const fornecedores = await response.json();
+        const response = await fetch(`http://127.0.0.1:8000/fornecedores/${codigo}`);
+
+        if (!response.ok) {
+          if (response.status == 400) {
+            throw new Error('Fornecedores não encontrados, verifique se o código existe.')
+          } else if (response.status == 500) {
+            throw new Error(response.statusText)
+          }          
+        }
+        
+        const fornecedores_data = await response.json();
+        const fornecedores = fornecedores_data.dados
 
         const fornecedorSelect = document.getElementById("product_font");
         fornecedorSelect.innerHTML = '<option value="" disabled selected>Selecione o fornecedor</option>';
@@ -169,15 +182,16 @@ async function fetchFornecedoresPorProduto(codigo) {
         });
     } catch (error) {
         console.error("Erro ao buscar fornecedores:", error);
-        alert("Erro ao carregar fornecedores. Verifique sua conexão com o servidor.");
+        alert(`Erro ao carregar fornecedores: ${error.message}`);
     }
 }
 
 // Função para buscar os lotes de um fornecedor e produto específico
 async function fetchLotes(fornecedorId, codigo) {
     try {
-        const response = await fetch(`http://localhost:3000/lotes?fornecedor=${fornecedorId}&codigo=${codigo}`);
-        const lotes = await response.json();
+        const response = await fetch(`http://127.0.0.1:8000/lotes?fornecedor=${fornecedorId}&codigo=${codigo}`);
+        const lotes_response = await response.json(); // Modificado por causa do pydantic
+        const lotes = lotes_response.dados
 
         const loteSelect = document.getElementById("numb_lote");
         loteSelect.innerHTML = '<option value="" disabled selected>Selecione o lote</option>';
@@ -195,116 +209,283 @@ async function fetchLotes(fornecedorId, codigo) {
     }
 }
   
-  //--------------------------------------------------------------Aparecer os recebimentos na tela
-  async function fetchVerSaidas() {
-    try {
-      const response = await fetch('/Saidas');
-  
-      if (!response.ok) {
-        throw new Error('Erro ao buscar saídas: ' + response.statusText);
-      }
-  
-      const saidas = await response.json();
-  
-      const tabelaRecebimentos = document.querySelector('.table-container');
-      if (!tabelaRecebimentos) {
-        throw new Error('Elemento com a classe "table-container" não encontrado no DOM.');
-      }
-  
-      tabelaRecebimentos.innerHTML = ''; // Limpa o conteúdo anterior
-  
-      if (saidas.length === 0) {
-        tabelaRecebimentos.innerHTML = '<div class="nenhum-recebimento">Nenhuma saída encontrada</div>';
-        return;
-      }
-  
-     saidas.forEach((saida, index) => {
-        // Cria uma linha principal
-        const mainRow = document.createElement('div');
-        mainRow.classList.add('row', 'main-row');
-        mainRow.innerHTML = `
-          <div class="cell"><strong>Data</strong><span>${saida.DATA_SAIDA}</span></div>
-          <div class="cell"><strong>Código</strong><span>${saida.CODIGO}</span></div>
-          <div class="cell"><strong>Item</strong><span>${saida.NOME_BASICO}</span></div>
-          <div class="cell"><strong>Fornecedor</strong><span>${saida.FORNECEDOR}</span></div>
-          <div class="cell"><strong>Preço Aquisição</strong><span>${saida.PRECO_DE_AQUISICAO} R$</span></div>
-          <div class="cell"><strong>Quantidade</strong><span>${saida.QUANT}</span></div>
-        `;
-  
-        // Cria a linha de detalhes
-        const detailsRow = document.createElement('div');
-        detailsRow.classList.add('row', 'details-row');
-        detailsRow.style.display = 'none'; // Esconde inicialmente
-        detailsRow.innerHTML = `
-          <div class="details-left">
-            <div class="image-placeholder">
-              <img src="${saida.IMAGEM}" alt="Ícone de imagem">
-            </div>
-          </div>
-          <div class="details-right">
-            <div class="detail-item"><strong>Fragilidade:</strong><span>${saida.FRAGILIDADE}</span></div>
-            <div class="detail-item"><strong>Fabricante:</strong><span>${saida.FABRICANTE}</span></div>
-            <div class="detail-item"><strong>Lote:</strong><span>${saida.LOTE}</span></div>
-            <div class="detail-item"><strong>Validade:</strong><span>${saida.VALIDADE}</span></div>
-            <div class="detail-item"><strong>Preço Venda:</strong><span>${saida.PRECO_DE_VENDA} RS</span></div>
-          </div>
-        `;
-  
-        // Adiciona um evento de clique à linha principal
-        mainRow.addEventListener('click', () => {
-          detailsRow.style.display = detailsRow.style.display === 'none' ? 'flex' : 'none';
-        });
-  
-        // Adiciona as linhas à tabela
-        tabelaRecebimentos.appendChild(mainRow);
-        tabelaRecebimentos.appendChild(detailsRow);
-      });
-    } catch (error) {
-      alert('Erro ao buscar saídas: ' + error.message);
+//--------------------------------------------------------------Aparecer os recebimentos na tela
+// arrays que serão preenchidas com os dados recebidos
+let saidas = []
+let categorias = []
+let fornecedores = []
+let fabricantes = []
+
+async function fetchSaidas() {
+  try {
+    const response = await fetch('http://127.0.0.1:8000/saidas');
+
+    if (!response.ok) {
+      throw new Error('Erro ao buscar saídas: ' + response.statusText);
     }
+
+    const saidas_resposta = await response.json(); // Modificado por causa da resposta do pydantic
+    const saidas_data = saidas_resposta.dados
+
+    saidas = saidas_data
+
+    // salva as informações para os selects
+    saidas_data.forEach(saida => {
+      if (!fabricantes.includes(saida.fabricante)) { // salva os fabricantes
+        fabricantes.push(saida.fabricante);
+      };
+      if (!categorias.includes(saida.categoria) && saida.categoria) { // salva as categorias
+        categorias.push(saida.categoria);
+      };
+      if (!fornecedores.includes(saida.fornecedor) && saida.fornecedor) {
+        fornecedores.push(saida.fornecedor)
+      }
+    });
+
+    //organiza e monta os selects
+    fabricantes.sort();
+    fabricantes.forEach(fabricante => {
+      const option = document.createElement("option");
+      option.value = fabricante;
+      option.textContent = fabricante;
+      fabricanteSelect.appendChild(option)
+    });
+    categorias.sort();
+    categorias.forEach(categoria => {
+      const option = document.createElement("option");
+      option.value = categoria;
+      option.textContent = categoria;
+      categoriaSelect.appendChild(option);
+    });
+    fornecedores.sort();
+    fornecedores.forEach(fornecedor => {
+      const option = document.createElement("option");
+      option.value = fornecedor;
+      option.textContent = fornecedor;
+      fornecedorSelect.appendChild(option);
+    });
+    
+    montarTabela();
+
+  } catch (error) {
+    alert('Erro ao buscar saídas: ' + error.message);
   }
+}
+
+// arrumar datas do banco de dados para o formato correto
+function parseDataBr(dataStr) {
+  const [dia, mes, ano] = dataStr.split("/");
+  return `${ano}-${mes.padStart(2, '0')}-${dia.padStart(2, '0')}`;
+}
+
+// objeto para ajustar o filtro
+const tabelaOpts = {
+  categoria: '',
+  fabricante: '',
+  fornecedor: '',
+  datas: [],
+  sort: '' // 'az' ou 'za'
+}
+
+function montarTabela() {
+  const tabelaSaidas = document.querySelector('.table-container');
+  if (!tabelaSaidas) {
+    throw new Error('Elemento com a classe "table-container" não encontrado no DOM.');
+  }
+
+  tabelaSaidas.innerHTML = ''; // Limpa o conteúdo anterior
+
+  if (saidas.length === 0) {
+    tabelaSaidas.innerHTML = '<div class="nenhum-recebimento">Nenhuma saída encontrada</div>';
+    return;
+  }
+
+  let tabelaData = saidas.slice() // cria uma nova cópia da array original
+  // organiza a array se o sort estiver sendo usado
+  if (tabelaOpts.sort === 'az') {
+    tabelaData.sort((a, b) => a.nome_basico.localeCompare(b.nome_basico));
+  } else if (tabelaOpts.sort === 'za') {
+    tabelaData.sort((a, b) => b.nome_basico.localeCompare(a.nome_basico)); // inverte a array
+  };
   
-  // Chama a função ao carregar a página
-  window.onload = fetchVerSaidas;
-  
-  
-  
-  
-  
-  
-  document.addEventListener("DOMContentLoaded", () => {
-    const mainRows = document.querySelectorAll(".main-row"); // Seleciona todas as linhas principais
-  
-    mainRows.forEach((row) => {
-        row.addEventListener("click", () => {
-            const detailsRow = row.nextElementSibling; // Seleciona a linha de detalhes imediatamente após a linha clicada
-            if (detailsRow && detailsRow.classList.contains("details-row")) {
-                // Alterna visibilidade
-                if (detailsRow.style.display === "flex") {
-                    detailsRow.style.display = "none"; // Esconder detalhes
-                } else {
-                    detailsRow.style.display = "flex"; // Mostrar detalhes
-                }
-            }
-        });
+
+  tabelaData.forEach((saida, index) => {
+    // filtra os itens caso necessário
+    // Categoria
+    if (tabelaOpts.categoria && tabelaOpts.categoria != saida.categoria) {
+      return; // faz a função pular para o próximo item, igual um continue
+    };
+    // Fabricante
+    if (tabelaOpts.fabricante && tabelaOpts.fabricante != saida.fabricante) {
+      return;
+    };
+    // Fornecedores
+    if (tabelaOpts.fornecedor && tabelaOpts.fornecedor != saida.fornecedor) {
+      return;
+    }
+    // Datas
+    if (
+      tabelaOpts.datas.length > 0 &&
+      (tabelaOpts.datas[0] > parseDataBr(saida.data_saida) ||
+      tabelaOpts.datas[1] < parseDataBr(saida.data_saida))
+    ) {
+      return;
+    };
+
+    // Cria uma linha principal
+    const mainRow = document.createElement('div');
+    mainRow.classList.add('row', 'main-row');
+    mainRow.innerHTML = `
+      <div class="cell"><strong>Data</strong><span>${saida.data_saida}</span></div>
+      <div class="cell"><strong>Código</strong><span>${saida.codigo}</span></div>
+      <div class="cell"><strong>Item</strong><span>${saida.nome_basico}</span></div>
+      <div class="cell"><strong>Fornecedor</strong><span>${saida.fornecedor}</span></div>
+      <div class="cell"><strong>Preço Aquisição</strong><span>${saida.preco_de_aquisicao} R$</span></div>
+      <div class="cell"><strong>Quantidade</strong><span>${saida.quant}</span></div>
+    `;
+
+    // Cria a linha de detalhes
+    const detailsRow = document.createElement('div');
+    detailsRow.classList.add('row', 'details-row');
+    detailsRow.style.display = 'none'; // Esconde inicialmente
+    detailsRow.innerHTML = `
+      <div class="details-left">
+        <div class="image-placeholder">
+          <img src="${saida.imagem}" alt="Ícone de imagem">
+        </div>
+      </div>
+      <div class="details-right">
+        <div class="detail-item"><strong>Fragilidade:</strong><span>${saida.fragilidade}</span></div>
+        <div class="detail-item"><strong>Fabricante:</strong><span>${saida.fabricante}</span></div>
+        <div class="detail-item"><strong>Lote:</strong><span>${saida.lote}</span></div>
+        <div class="detail-item"><strong>Validade:</strong><span>${saida.validade}</span></div>
+        <div class="detail-item"><strong>Preço Venda:</strong><span>${saida.preco_de_venda} RS</span></div>
+      </div>
+    `;
+
+    // Adiciona um evento de clique à linha principal
+    mainRow.addEventListener('click', () => {
+      detailsRow.style.display = detailsRow.style.display === 'none' ? 'flex' : 'none';
     });
+
+    // Adiciona as linhas à tabela
+    tabelaSaidas.appendChild(mainRow);
+    tabelaSaidas.appendChild(detailsRow);
   });
-  
-  
-  document.addEventListener("DOMContentLoaded", () => {
-    const filtrarButton = document.querySelector("#filtrar");
-    const caixote = document.querySelector("#caixote");
-  
-    //mostrar ou esconder o caixote
-    filtrarButton.addEventListener("click", (event) => {
-        caixote.classList.toggle("active");
-        event.stopPropagation(); // impede que o click no filtro feche o dropdown
-    });
-  
-    // Fecha o caixote se clicar fora dele
-    document.addEventListener("click", (event) => {
-        if (!caixote.contains(event.target) && !filtrarButton.contains(event.target)) {
-            caixote.classList.remove("active");
-        }
-    });
+}
+
+// Chama a função ao carregar a página
+window.onload = fetchSaidas();
+
+document.addEventListener("DOMContentLoaded", () => {
+  const filtrarButton = document.querySelector("#filtrar");
+  const caixote = document.querySelector("#caixote");
+
+  //mostrar ou esconder o caixote
+  filtrarButton.addEventListener("click", (event) => {
+      caixote.classList.toggle("active");
+      event.stopPropagation(); // impede que o click no filtro feche o dropdown
   });
+
+  // Fecha o caixote se clicar fora dele
+  document.addEventListener("click", (event) => {
+      if (!caixote.contains(event.target) && !filtrarButton.contains(event.target)) {
+          caixote.classList.remove("active");
+      }
+  });
+});
+
+// ---------------------------funções do filtro
+const categoriaSelect = document.getElementById("categoria");
+const fabricanteSelect = document.getElementById("fabricante");
+const fornecedorSelect = document.getElementById("fornecedor")
+
+const dataIni = document.getElementById("dedata");
+const dataFinal = document.getElementById("atedata");
+
+// Selects
+categoriaSelect.addEventListener("change", () => {
+  if (categoriaSelect.selectedIndex !== 0) {
+    tabelaOpts.categoria = categoriaSelect.value;
+
+  } else {
+    tabelaOpts.categoria = ''; // reseta o valor
+  };
+  montarTabela();
+});
+
+fabricanteSelect.addEventListener("change", () => {
+  if (fabricanteSelect.selectedIndex !== 0){
+    tabelaOpts.fabricante = fabricanteSelect.value;
+  } else { // se selecionar a primeira opção
+    tabelaOpts.fabricante = ''; // reseta o valor
+  };
+  montarTabela();
+});
+
+fornecedorSelect.addEventListener("change", () => {
+  if (fornecedorSelect.selectedIndex !== 0){
+    tabelaOpts.fornecedor = fornecedorSelect.value;
+  } else { // se selecionar a primeira opção
+    tabelaOpts.fornecedor = ''; // reseta o valor
+  };
+  montarTabela();
+});
+
+// Datas
+dataIni.addEventListener("change", () => {
+  if (dataIni.value && dataFinal.value) {
+    tabelaOpts.datas = [dataIni.value, dataFinal.value];
+  } else {
+    tabelaOpts.datas = [];
+  };
+  montarTabela();
+});
+
+dataFinal.addEventListener("change", () => {
+  if (dataIni.value && dataFinal.value) {
+    tabelaOpts.datas = [dataIni.value, dataFinal.value];
+  } else {
+    tabelaOpts.datas = [];
+  };
+  montarTabela();
+});
+
+// organizar alfabéticamente
+const sortButton = document.getElementById('sortAz');
+const sortButtonRev = document.getElementById('sortZa');
+
+sortButton.addEventListener('click', () => {
+  if (tabelaOpts.sort !== 'az') {
+    sortButton.style.borderColor = '#FFCC00'
+    sortButtonRev.style.borderColor = ''
+    tabelaOpts.sort = 'az';
+  } else {
+    sortButton.style.borderColor = ''
+    tabelaOpts.sort = '';
+  };
+  montarTabela();
+});
+
+sortButtonRev.addEventListener('click', () => {
+  if (tabelaOpts.sort !== 'za') {
+    sortButtonRev.style.borderColor = '#FFCC00'
+    sortButton.style.borderColor = ''
+    tabelaOpts.sort = 'za';
+  } else {
+    sortButtonRev.style.borderColor = ''
+    tabelaOpts.sort = '';
+  };
+  montarTabela();
+});
+
+// Limpa o filtro completamente
+document.getElementById('textinho').addEventListener('click', () => {
+  tabelaOpts.categoria = '';
+  tabelaOpts.fabricante = '';
+  tabelaOpts.datas = [];
+  tabelaOpts.sort = '';
+  montarTabela();
+  sortButton.style.borderColor = ''
+  sortButtonRev.style.borderColor = ''
+});

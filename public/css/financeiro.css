@@ -223,6 +223,11 @@ select {
     z-index: 10;
 }
 
+#caixote input,
+#caixote button {
+    cursor: pointer;
+}
+
 /* Mostra o dropdown quando ativo */
 #caixote.active {
     display: block;
@@ -242,6 +247,10 @@ select {
 
 #textinho {
     color: #FFCC00;
+}
+#textinho:hover {
+    background-color: #FFCC0022;
+    cursor: pointer;
 }
 
 #dropdown {
@@ -470,8 +479,11 @@ select:hover option:hover {
 #submitButton {
     display: flex;
     justify-self: center;
-    align-content: center;
+    justify-content: center;
+    align-items: center;
     text-align: center;
+    font-size: large;
+    font-weight: bold;
     background-color: #FFCC00;
     color: white;
     border: none;
@@ -570,7 +582,6 @@ select:hover option:hover {
     height: auto;
     color: #FFCC00;
     margin-top: -65.7vh;
-    cursor: pointer;
     justify-content: center;
     /* Centraliza os elementos horizontalmente */
     align-items: center;

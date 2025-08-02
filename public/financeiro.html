@@ -27,7 +27,7 @@
 
     <!--------------------------------HAMBURGUER------------------------------------------------------------------------------------>
     <div id="sidebar" class="sidebar">
-      <button id="close-btn" class="close-btn">&times;</button>
+      <button id="close-btn" class="close-btn" onclick="toggleForm()">&times;</button>
       <img src="imglogineusuario/senaibranco.svg" alt="" />
       <h3>Menu</h3>
       <ul>
@@ -99,7 +99,7 @@
 
     <div id="formContainer">
       <h2>Novo Recebimento</h2>
-      <button id="close-btn" class="close-btn">&times;</button>
+      <button id="close-btn" class="close-btn" onclick="toggleForm()">&times;</button>
       <form id="registrationForm">
 
         <div class="input-container">
@@ -138,7 +138,7 @@
         </div>
 
         <button type="submit" id="submitButton">
-          <h3>Cadastrar</h3>
+          Cadastrar
         </button>
       </form>
     </div>
@@ -151,33 +151,36 @@
     document.getElementById('registrationForm').addEventListener('submit', async function (event) {
       event.preventDefault();
 
-      const usuarioLogado = JSON.parse(localStorage.getItem('usuarioLogado'));
+      // comentado para testar o backend e a tabela recebimento não tem inseridoPor
+      // const usuarioLogado = JSON.parse(localStorage.getItem('usuarioLogado'));
 
       const formContainer = document.getElementById("formContainer");
 
       const recebimento = {
         fornecedor: document.getElementById('productFont').value,
         codigo: document.getElementById('codigo').value,
-        quantidade: document.getElementById('quantityReceived').value,
-        numbLote: document.getElementById('numbLote').value,
-        dataRecebimento: document.getElementById('dataRecebimento').value,
+        quant: document.getElementById('quantityReceived').value,
+        lote: document.getElementById('numbLote').value,
+        data_receb: document.getElementById('dataRecebimento').value,
         validade: document.getElementById('validade').value,
-        precoAqui: document.getElementById('precoAqui').value,
-        inseridoPor: usuarioLogado.tipo === 'professor' ? SNProfessor : usuarioLogado.email,
+        preco_de_aquisicao: document.getElementById('precoAqui').value,
+        // inseridoPor: usuarioLogado.tipo === 'professor' ? SNProfessor : usuarioLogado.email, não tem esse campo no banco de dados
       };
 
 
 
       try {
-        const response = await fetch('http://localhost:3000/adicionar-recebimento', {
+        const response = await fetch('http://127.0.0.1:8000/adicionar-recebimento', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify(recebimento),
         });
 
+        console.log(response)
+
         if (response.ok) {
           alert('recebimento adicionado com sucesso!');
-          formContainer.style.display = "block";
+          formContainer.style.display = "none";
         } else {
           const errorMessage = await response.text();
           alert('Erro: ' + errorMessage);
@@ -185,6 +188,7 @@
       } catch (error) {
         alert('Erro ao adicionar recebimento ' + error.message);
       }
+      fetchData(); // recarrega os dados e monta a tabela com o dado adicionado
     });
 
   </script>
@@ -215,12 +219,12 @@
               <label for="categoria">Categoria:</label>
               <select id="categoria" name="categoria">
                   <option value="">Selecione Categoria</option>
-                  <!-- Adicione as opções dinamicamente via JavaScript -->
+                  <!-- opções adicionadas dinamicamente via JavaScript -->
               </select>
               <label for="fabricante">Fabricante:</label>
               <select id="fabricante" name="fabricante">
                   <option value="">Selecione Fabricante</option>
-                  <!-- Adicione os fabricantes dinamicamente via JavaScript -->
+                  <!-- fabricantes adicionados dinamicamente via JavaScript -->
               </select>
           </div>
           <!-- <div id="inputdata">
@@ -240,8 +244,8 @@
             </div>
             <div id="ordernaritem">Ordenar Item
               <div id="botoes">
-                <button>A a Z</button>
-                <button>Z a A</button>
+                <button id="sortAz">A a Z</button>
+                <button id="sortZa">Z a A</button>
               </div>
             </div>
           </div>
@@ -249,7 +253,7 @@
 
         <!-- acabou as mudanças -->
         <form id="formPesquisa">
-            <input type="text" id="pesquisa" placeholder="Digite o código" required>
+            <input type="text" id="pesquisa" placeholder="Digite o código">
               <button id="pesquisar">Pesquisar <img src="imagens/lupa.svg" alt="" id="pes"></button>
             </button>
         </form>
@@ -333,25 +337,24 @@
     document.getElementById('formPesquisa').addEventListener('submit', async function (event) {
   event.preventDefault(); // Impede o envio tradicional do formulário
 
-  const codigo = document.getElementById('codigo').value.trim(); // Obtém o valor do código
+  // antes estava com o id codigo do formulário de adicionar recebimento
+  const codigo = document.getElementById('pesquisa').value.trim(); // Obtém o valor do código 
 
-  const pesquisa = {
-    codigo: codigo, // Envia o código digitado pelo usuário
-  };
+  // url com o código caso o código possua um valor
+  const url_pesquisa = codigo ? `http://127.0.0.1:8000/recebimento/${codigo}` : 'http://127.0.0.1:8000/recebimento'
 
   try {
     // Envia a requisição para o backend
-    const response = await fetch('http://localhost:3000/Recebimento', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(pesquisa)
-    });
+    // modificado para ser uma requisição GET com path parameter
+    const response = await fetch(url_pesquisa);
 
     if (response.ok) {
-      const produtos = await response.json(); // Recebe a resposta em formato JSON
+
+      const produtos = await response.json(); // Recebe a resposta em formato JSON **modificado pelo pydantic**
+      const dados = produtos.dados
 
       // Se não houver resultados
-      if (produtos.length === 0) {
+      if (dados.length === 0) {
         document.querySelector('#table-container').innerHTML = '<p>Nenhum produto encontrado!</p>';
         return;
       }
@@ -364,7 +367,7 @@
       let linhasTabela = '';
 
       // Processa os produtos retornados e cria o HTML para exibição
-      produtos.forEach((filtrado) => {
+      dados.forEach((filtrado) => {
         linhasTabela += `
           <div class="row main-row" onclick="this.nextElementSibling.style.display = this.nextElementSibling.style.display === 'none' ? 'flex' : 'none'">
             <div class="cell"><strong>Data</strong><span>${filtrado.DATA_RECEB}</span></div>
@@ -410,7 +413,7 @@
 
   <script src="js/financeiro.js"></script>
   <script src="js/navbar.js"></script>
-  <script src="js/app.js"></script>
+  <!-- <script src="js/app.js"></script> -->
 </body>
 
 </html>
