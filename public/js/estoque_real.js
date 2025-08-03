@@ -33,41 +33,41 @@ document.addEventListener("DOMContentLoaded", () => {
 
 //----------SCRIPT PRINCIPAL
 
-    async function fetchEstoqueReal() {
-        try {
-            const response = await fetch('/estoque-real');
-            
-            if (!response.ok) {
-                throw new Error('Erro ao buscar produtos: ' + response.statusText);
-            }
+async function fetchEstoqueReal() {
+    try {
+        const response = await fetch('http://localhost:8000/estoque');
+        
+        if (!response.ok) {
+            throw new Error('Erro ao buscar produtos: ' + response.statusText);
+        }
 
-            const produtos = await response.json();
+        const produtos = await response.json();
 
-            const tbody = document.querySelector('#tabela-estoque tbody');
-            tbody.innerHTML = '';
+        const tbody = document.querySelector('#tabela-estoque tbody');
+        tbody.innerHTML = '';
 
-            if (produtos.length === 0) {
-                tbody.innerHTML = '<tr><td colspan="8">Nenhum produtos encontrado</td></tr>';
-                return;
-            }
+        if (produtos.length === 0) {
+            tbody.innerHTML = '<tr><td colspan="8">Nenhum produtos encontrado</td></tr>';
+            return;
+        }
 
-            produtos.forEach(produtos => {
+        produtos.forEach(produtos => {
 
-const row = `
-<tr>
-    <td>${produtos.CODIGO}</td>
-    <td>${produtos.NOME_BASICO}</td>
-    <td>50</td>
-    <td>${produtos.QUANT_RECENTE}</td>
-    <td>${produtos.QUANTIDADE}</td>
-    <td>${produtos.QUANTIDADE}</td>
-    <td>100%</td>
-    <td>OK</td>
-</tr>
+            const row = `
+            <tr>
+                <td>${produtos.codigo}</td>
+                <td>${produtos.nome_basico}</td>
+                <td>50</td>
+                <td>${produtos.quant_recente}</td>
+                <td>${produtos.quantidade}</td>
+                <td>${produtos.quantidade}</td>
+                <td>100%</td>
+                <td>OK</td>
+            </tr>
 
-    `;
-tbody.innerHTML += row;
-});
+                `;
+            tbody.innerHTML += row;
+            });
             } catch (error) {
                 alert('Erro ao buscar usuários: ' + error.message);
             }
@@ -99,74 +99,74 @@ function tirarFiltro(){
 
 //-----------------------FILTRO FABRICANTE
 
-document.addEventListener('DOMContentLoaded', async () => {
-    const filtroFabricante = document.getElementById('fabricante');
+// document.addEventListener('DOMContentLoaded', async () => {
+//     const filtroFabricante = document.getElementById('fabricante');
 
-    try {
-        const response = await fetch('http://localhost:3000/filtro-fabricante');
-        if (response.ok) {
-            const fabricantes = await response.json();
+//     try {
+//         const response = await fetch('http://localhost:3000/filtro-fabricante');
+//         if (response.ok) {
+//             const fabricantes = await response.json();
 
-            fabricantes.forEach(fabricante => {
-                const option = document.createElement('option');
-                option.value = fabricante.FABRICANTE;
-                option.textContent = fabricante.FABRICANTE;
-                filtroFabricante.appendChild(option);
-            });
-        } else {
-            console.error('Erro ao carregar fabricantes:', await response.text());
-        }
-    } catch (error) {
-        console.error('Erro ao conectar ao servidor:', error);
-    }
-});
+//             fabricantes.forEach(fabricante => {
+//                 const option = document.createElement('option');
+//                 option.value = fabricante.FABRICANTE;
+//                 option.textContent = fabricante.FABRICANTE;
+//                 filtroFabricante.appendChild(option);
+//             });
+//         } else {
+//             console.error('Erro ao carregar fabricantes:', await response.text());
+//         }
+//     } catch (error) {
+//         console.error('Erro ao conectar ao servidor:', error);
+//     }
+// });
 
-function atualizarTabela(dados) {
-    const tbody = document.querySelector('#tabela-estoque tbody');
-    tbody.innerHTML = '';
+// function atualizarTabela(dados) {
+//     const tbody = document.querySelector('#tabela-estoque tbody');
+//     tbody.innerHTML = '';
 
-    if (dados.length === 0) {
-        tbody.innerHTML = '<tr><td colspan="6">Nenhum produto encontrado</td></tr>';
-        return;
-    }
+//     if (dados.length === 0) {
+//         tbody.innerHTML = '<tr><td colspan="6">Nenhum produto encontrado</td></tr>';
+//         return;
+//     }
 
-    dados.forEach(produto => {
-        const row = `
-            <tr>
-                <td>${produto.CODIGO}</td>
-                <td>${produto.NOME_BASICO}</td>
-                <td>${produto.DESCRICAO_TECNICA}</td>
-                <td>${produto.QUANT}</td>
-                <td>${produto.CATEGORIA}</td>
-                <td>${produto.FABRICANTE}</td>
-            </tr>`;
-        tbody.innerHTML += row;
-    });
-}
+//     dados.forEach(produto => {
+//         const row = `
+//             <tr>
+//                 <td>${produto.CODIGO}</td>
+//                 <td>${produto.NOME_BASICO}</td>
+//                 <td>${produto.DESCRICAO_TECNICA}</td>
+//                 <td>${produto.QUANT}</td>
+//                 <td>${produto.CATEGORIA}</td>
+//                 <td>${produto.FABRICANTE}</td>
+//             </tr>`;
+//         tbody.innerHTML += row;
+//     });
+// }
 
 
-function atualizarTabela(dados) {
-    const tbody = document.querySelector('#tabela-estoque tbody');
-    tbody.innerHTML = '';
+// function atualizarTabela(dados) {
+//     const tbody = document.querySelector('#tabela-estoque tbody');
+//     tbody.innerHTML = '';
 
-    if (dados.length === 0) {
-        tbody.innerHTML = '<tr><td colspan="6">Nenhum produto encontrado</td></tr>';
-        return;
-    }
+//     if (dados.length === 0) {
+//         tbody.innerHTML = '<tr><td colspan="6">Nenhum produto encontrado</td></tr>';
+//         return;
+//     }
 
-    dados.forEach(produto => {
-        const row = `
-            <tr>
-                <td>${produto.CODIGO}</td>
-                <td>${produto.NOME_BASICO}</td>
-                <td>${produto.DESCRICAO_TECNICA}</td>
-                <td>${produto.QUANT}</td>
-                <td>${produto.CATEGORIA}</td>
-                <td>${produto.FABRICANTE}</td>
-            </tr>`;
-        tbody.innerHTML += row;
-    });
-}
+//     dados.forEach(produto => {
+//         const row = `
+//             <tr>
+//                 <td>${produto.CODIGO}</td>
+//                 <td>${produto.NOME_BASICO}</td>
+//                 <td>${produto.DESCRICAO_TECNICA}</td>
+//                 <td>${produto.QUANT}</td>
+//                 <td>${produto.CATEGORIA}</td>
+//                 <td>${produto.FABRICANTE}</td>
+//             </tr>`;
+//         tbody.innerHTML += row;
+//     });
+// }
 
 
      
