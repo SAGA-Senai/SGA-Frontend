@@ -6,9 +6,12 @@ let fabricantes = [];
 let categorias = [];
 let fornecedores = [];
 
-async function fetchSaldos() {
+async function fetchSaldos(event = null, num = 0) {
   try {
-    const response = await fetch('http://127.0.0.1:8000/saldos');
+
+    saldo_url = num ? `http://127.0.0.1:8000/saldos/${num}` : 'http://127.0.0.1:8000/saldos';
+
+    const response = await fetch(saldo_url);
 
     if (!response.ok) {
       throw new Error('Erro ao buscar saldos: ' + response.statusText);
@@ -34,6 +37,8 @@ async function fetchSaldos() {
 
     //organiza e monta os selects
     fabricantes.sort();
+    // Limpa os selects antes de adicionar as opções para evitar duplicatas
+    fabricanteSelect.innerHTML = '<option value="" disabled selected>Selecione o fabricante</option>';
     fabricantes.forEach(fabricante => {
       const option = document.createElement("option");
       option.value = fabricante;
@@ -41,6 +46,7 @@ async function fetchSaldos() {
       fabricanteSelect.appendChild(option)
     });
     categorias.sort();
+    categoriaSelect.innerHTML = '<option value="" disabled selected>Selecione a categoria</option>';
     categorias.forEach(categoria => {
       const option = document.createElement("option");
       option.value = categoria;
@@ -48,6 +54,7 @@ async function fetchSaldos() {
       categoriaSelect.appendChild(option);
     });
     fornecedores.sort();
+    fornecedorSelect.innerHTML = '<option value="" disabled selected>Selecione o fornecedor</option>';
     fornecedores.forEach(fornecedor => {
       const option = document.createElement("option");
       option.value = fornecedor;
@@ -301,10 +308,15 @@ sortButtonRev.addEventListener('click', () => {
 
 // Limpa o filtro completamente
 document.getElementById('textinho').addEventListener('click', () => {
+  //limpa os dados do objeto tabelaOpts
   tabelaOpts.categoria = '';
   tabelaOpts.fabricante = '';
-  tabelaOpts.datas = [];
+  tabelaOpts.fornecedor = '';
   tabelaOpts.sort = '';
+  // arruma os selects
+  categoriaSelect.selectedIndex = 0;
+  fabricanteSelect.selectedIndex = 0;
+  fornecedorSelect.selectedIndex = 0;
   montarTabela();
   sortButton.style.borderColor = ''
   sortButtonRev.style.borderColor = ''

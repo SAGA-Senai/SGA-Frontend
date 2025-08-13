@@ -73,12 +73,15 @@ document
 // arrays que serão preenchidas com os dados recebidos
 let recebimentos = [];
 let fabricantes = [];
+let fornecedores = [];
 let categorias = [];
 
 // Busca os dados do backend
-async function fetchData() {
+async function fetchData(event = null, num = 0) {
   try {
-    const response = await fetch('http://127.0.0.1:8000/recebimento');
+    // Se um número for passado, busca por ele, senão busca todos
+    const recebimento_url = num ? `http://127.0.0.1:8000/recebimento/${num}` : 'http://127.0.0.1:8000/recebimento';
+    const response = await fetch(recebimento_url);
 
     if (!response.ok) {
       throw new Error('Erro ao buscar produtos: ' + response.statusText);
@@ -96,10 +99,15 @@ async function fetchData() {
       if (!categorias.includes(recebimento.CATEGORIA) && recebimento.CATEGORIA) { // salva as categorias
         categorias.push(recebimento.CATEGORIA);
       };
+      if (!fornecedores.includes(recebimento.FORNECEDOR)) { // salva os fornecedores
+        fornecedores.push(recebimento.FORNECEDOR);
+      }
     });
 
     // organiza e adiciona à página os fabricantes
     fabricantes.sort();
+    // limpa os selects antes de adicionar os novos valores para evitar duplicatas
+    fabricanteSelect.innerHTML = '<option value="" disabled selected>Selecione o fabricante</option>';
     fabricantes.forEach(fabricante => {
       const option = document.createElement("option");
       option.value = fabricante;
@@ -107,11 +115,22 @@ async function fetchData() {
       fabricanteSelect.appendChild(option)
     });
     categorias.sort();
+    // limpa os selects antes de adicionar os novos valores para evitar duplicatas
+    categoriaSelect.innerHTML = '<option value="" disabled selected>Selecione a categoria</option>';
     categorias.forEach(categoria => {
       const option = document.createElement("option");
       option.value = categoria;
       option.textContent = categoria;
       categoriaSelect.appendChild(option)
+    });
+    fornecedores.sort();
+    // limpa os selects antes de adicionar os novos valores para evitar duplicatas
+    fornecedorSelect.innerHTML = '<option value="" disabled selected>Selecione o fornecedor</option>'; 
+    fornecedores.forEach(fornecedor => {
+      const option = document.createElement("option");
+      option.value = fornecedor;
+      option.textContent = fornecedor;
+      fornecedorSelect.appendChild(option);
     });
 
     montarTabela();
@@ -137,7 +156,7 @@ const tabelaOpts = {
   sort: '' // 'az' ou 'za'
 }
 
-async function montarTabela() {
+function montarTabela() {
   const tabelaRecebimentos = document.querySelector('.table-container');
   if (!tabelaRecebimentos) {
     throw new Error('Elemento com a classe "table-container" não encontrado no DOM.');
@@ -165,6 +184,9 @@ async function montarTabela() {
       return; // faz a função pular para o próximo item, igual um continue
     };
     if (tabelaOpts.fabricante && tabelaOpts.fabricante != recebimento.FABRICANTE) {
+      return;
+    };
+    if (tabelaOpts.fornecedor && tabelaOpts.fornecedor != recebimento.FORNECEDOR) {
       return;
     };
     if (
@@ -241,6 +263,7 @@ document.addEventListener("DOMContentLoaded", () => {
 // ---------------------------funções do filtro
 const categoriaSelect = document.getElementById("categoria");
 const fabricanteSelect = document.getElementById("fabricante");
+const fornecedorSelect = document.getElementById("fornecedor");
 
 const dataIni = document.getElementById("dedata");
 const dataFinal = document.getElementById("atedata");
@@ -265,6 +288,16 @@ fabricanteSelect.addEventListener("change", () => {
   montarTabela();
 });
 
+fornecedorSelect.addEventListener("change", () => {
+  if (fornecedorSelect.selectedIndex !== 0) {
+    tabelaOpts.fornecedor = fornecedorSelect.value;
+    console.log(tabelaOpts.fornecedor);
+  } else { // se selecionar a primeira opção
+    tabelaOpts.fornecedor = ''; // reseta o valor
+  }
+  montarTabela();
+});
+
 // Datas
 dataIni.addEventListener("change", () => {
   if (dataIni.value && dataFinal.value) {
@@ -284,7 +317,7 @@ dataFinal.addEventListener("change", () => {
   montarTabela();
 });
 
-// organizar alfabéticamente
+// organizar alfabeticamente
 const sortButton = document.getElementById('sortAz');
 const sortButtonRev = document.getElementById('sortZa');
 
@@ -316,8 +349,15 @@ sortButtonRev.addEventListener('click', () => {
 document.getElementById('textinho').addEventListener('click', () => {
   tabelaOpts.categoria = '';
   tabelaOpts.fabricante = '';
+  tabelaOpts.fornecedor = '';
   tabelaOpts.datas = [];
   tabelaOpts.sort = '';
+  // Reseta os selects e inputs
+  categoriaSelect.selectedIndex = 0;
+  fabricanteSelect.selectedIndex = 0;
+  fornecedorSelect.selectedIndex = 0;
+  dataIni.value = '';
+  dataFinal.value = '';
   montarTabela();
   sortButton.style.borderColor = ''
   sortButtonRev.style.borderColor = ''

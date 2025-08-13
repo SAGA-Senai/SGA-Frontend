@@ -205,81 +205,10 @@ document.addEventListener('click', function (event) {
 });
 
 document.getElementById('formPesquisa').addEventListener('submit', async function (event) {
-event.preventDefault(); // Evita o comportamento padrão do formulário
+  event.preventDefault(); // Evita o comportamento padrão do formulário
+  const codigo = document.getElementById('pesquisa').value.trim();
 
-
-const codigo = document.getElementById('pesquisa').value.trim(),
-
-
-saldo_url = codigo ? `http://127.0.0.1:8000/saldos/${codigo}` : 'http://127.0.0.1:8000/saldos' 
-
-try {
-  const response = await fetch(saldo_url)
-
-
-  if (response.ok) {
-    const saldo_json = await response.json();  // modificado por causa do pydantic
-    const saldos = saldo_json.dados
-
-    if (saldos.length === 0) {
-      alert('Nenhum produto encontrado!');
-      return;
-    }
-
-    const tbody = document.querySelector('#table-container');
-    tbody.innerHTML = '';
-
-    saldos.forEach((saldo) => {
-      // Cria uma linha principal
-      const mainRow = document.createElement('div');
-      mainRow.classList.add('row', 'main-row');
-      mainRow.innerHTML = `
-        <div class="cell"><strong>Item</strong><span>${saldo.nome_basico}</span></div>
-        <div class="cell"><strong>Código</strong><span>${saldo.codigo}</span></div>
-        <div class="cell"><strong>Lote</strong><span>${saldo.lote}</span></div>
-        <div class="cell"><strong>Quantidade Recebida</strong><span>${saldo.quant_recebimento}</span></div>
-        <div class="cell"><strong>Quantidade Saída</strong><span>${saldo.quant_saida}</span></div>
-        <div class="cell"><strong>Saldo</strong><span>${saldo.saldo}</span></div>
-      `;
-
-      // Cria a linha de detalhes
-      const detailsRow = document.createElement('div');
-      detailsRow.classList.add('row', 'details-row');
-      detailsRow.style.display = 'none'; // Esconde inicialmente
-      detailsRow.innerHTML = `
-<div class="details-left">
-  <div class="image-placeholder">
-    <img src="${saldo.imagem}" alt="Ícone de imagem">
-  </div>
-</div>
-<div class="details-right">
-  <div class="detail-item"><strong>Fragilidade:</strong><span>${saldo.fragilidade}</span></div>
-  <div class="detail-item"><strong>Fabricante:</strong><span>${saldo.fabricante}</span></div>
-  <div class="detail-item"><strong>Lote:</strong><span>${saldo.lote}</span></div>
-  <div class="detail-item"><strong>Validade:</strong><span>${saldo.validade}</span></div>
-  <div class="detail-item"><strong>Preço Venda:</strong><span>${saldo.preco_de_venda} RS</span></div>
-</div>
-`;
-
-      // Adiciona um evento de clique à linha principal
-      mainRow.addEventListener('click', () => {
-        detailsRow.style.display = detailsRow.style.display === 'none' ? 'flex' : 'none';
-      });
-
-      // Adiciona as linhas à tabela
-      tbody.appendChild(mainRow);
-      tbody.appendChild(detailsRow);
-
-    });
-
-
-  } else {
-    const errorMessage = await response.text();
-    alert('Erro: ' + errorMessage);
-  }
-} catch (error) {
-  alert('Erro ao buscar produtos: ' + error.message);
-}
+  fetchSaldos(event = null, num = codigo);
 });
 
 

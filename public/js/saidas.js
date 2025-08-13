@@ -103,7 +103,7 @@ function toggleForm() {
         alert("Saída registrada com sucesso!");
         registrationForm.reset();
         formContainer.style.display = "none";
-        fetchVerSaidas()
+        fetchSaidas()
       } else {
         const error = await response.json();
         alert("Erro ao registrar saída: " + error.message);
@@ -196,13 +196,15 @@ async function fetchLotes(fornecedorId, codigo) {
         const loteSelect = document.getElementById("numb_lote");
         loteSelect.innerHTML = '<option value="" disabled selected>Selecione o lote</option>';
 
-        lotes.forEach(lote => {
-            const option = document.createElement("option");
-            option.value = lote.id;
-            option.textContent = `Lote ${lote.id} - Estoque: ${lote.estoqueDisponivel}`;
-            option.setAttribute("data-quantity", lote.estoqueDisponivel);
-            loteSelect.appendChild(option);
-        });
+        if (lotes) {
+          lotes.forEach(lote => {
+              const option = document.createElement("option");
+              option.value = lote.id;
+              option.textContent = `Lote ${lote.id} - Estoque: ${lote.estoqueDisponivel}`;
+              option.setAttribute("data-quantity", lote.estoqueDisponivel);
+              loteSelect.appendChild(option);
+          });
+        }
     } catch (error) {
         console.error("Erro ao buscar lotes:", error);
         alert("Erro ao carregar lotes. Verifique sua conexão com o servidor.");
@@ -216,9 +218,11 @@ let categorias = []
 let fornecedores = []
 let fabricantes = []
 
-async function fetchSaidas() {
+async function fetchSaidas(event = null, num = 0) {
   try {
-    const response = await fetch('http://127.0.0.1:8000/saidas');
+    saidaUrl = num ? `http://127.0.0.1:8000/saidas/${num}` : 'http://127.0.0.1:8000/saidas';
+
+    const response = await fetch(saidaUrl);
 
     if (!response.ok) {
       throw new Error('Erro ao buscar saídas: ' + response.statusText);
@@ -232,6 +236,7 @@ async function fetchSaidas() {
     // salva as informações para os selects
     saidas_data.forEach(saida => {
       if (!fabricantes.includes(saida.fabricante)) { // salva os fabricantes
+        console.log(saida.fabricante, typeof saida.fabricante);
         fabricantes.push(saida.fabricante);
       };
       if (!categorias.includes(saida.categoria) && saida.categoria) { // salva as categorias
@@ -244,6 +249,8 @@ async function fetchSaidas() {
 
     //organiza e monta os selects
     fabricantes.sort();
+    // Limpa os selects antes de adicionar as opções para evitar duplicatas
+    fabricanteSelect.innerHTML = '<option value="" disabled selected>Selecione o fabricante</option>';
     fabricantes.forEach(fabricante => {
       const option = document.createElement("option");
       option.value = fabricante;
@@ -251,6 +258,7 @@ async function fetchSaidas() {
       fabricanteSelect.appendChild(option)
     });
     categorias.sort();
+    categoriaSelect.innerHTML = '<option value="" disabled selected>Selecione a categoria</option>';
     categorias.forEach(categoria => {
       const option = document.createElement("option");
       option.value = categoria;
@@ -258,6 +266,7 @@ async function fetchSaidas() {
       categoriaSelect.appendChild(option);
     });
     fornecedores.sort();
+    fornecedorSelect.innerHTML = '<option value="" disabled selected>Selecione o fornecedor</option>';
     fornecedores.forEach(fornecedor => {
       const option = document.createElement("option");
       option.value = fornecedor;
@@ -483,8 +492,15 @@ sortButtonRev.addEventListener('click', () => {
 document.getElementById('textinho').addEventListener('click', () => {
   tabelaOpts.categoria = '';
   tabelaOpts.fabricante = '';
+  tabelaOpts.fornecedor = '';
   tabelaOpts.datas = [];
   tabelaOpts.sort = '';
+  // Reseta os selects e inputs
+  categoriaSelect.selectedIndex = 0;
+  fabricanteSelect.selectedIndex = 0;
+  fornecedorSelect.selectedIndex = 0;
+  dataIni.value = '';
+  dataFinal.value = '';
   montarTabela();
   sortButton.style.borderColor = ''
   sortButtonRev.style.borderColor = ''
