@@ -96,6 +96,22 @@ body {
     transform: scale(1.03);
 }
 
+#sortAz{
+    background-color: #FFCC00;
+    color: white;
+    border: none;
+    padding: 2.4%;
+    border-radius: 10px;
+}
+
+#sortZa{
+    background-color: #FFCC00;
+    color: white;
+    border: none;
+    padding: 2.4%;
+    border-radius: 10px;
+}
+
 textarea:focus,
 input:focus,
 select:focus {
@@ -212,7 +228,7 @@ select {
     display: none;
     /* Inicialmente escondido */
     position: absolute;
-    top: 50px;
+    top: 30%;
     /* Ajuste para aparecer abaixo do botão Filtrar */
     width: 20vw;
     background-color: #fff;
@@ -401,7 +417,7 @@ select:hover option:hover {
     margin-top: -72vh;
     z-index: 99999;
     box-shadow: 5px 5px 10px rgba(0, 0, 0, 0.2);
-    margin-left: 38%;
+    /* margin-left: 38%; */
 
 }
 
@@ -775,6 +791,30 @@ select:hover option:hover {
 
 .detail-item span {
     color: #888;
+}
+
+/* Fundo escurecido atrás do modal */
+#overlay {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0,0,0,1); /* Escurece */
+    z-index: 998;
+}
+
+/* Quando ativo, mostra */
+#overlay.active {
+    display: block;
+}
+
+/* Bloqueio de interação quando modal aberto */
+body.modal-open #barradebusca,
+body.modal-open #filtrarcontainer {
+    pointer-events: none; /* Desativa clique */
+    opacity: 0.5; /* Deixa visualmente "desativado" */
 }
 
 /* FOOTER */

@@ -96,6 +96,22 @@ body {
     transform: scale(1.03);
 }
 
+#sortAz{
+    background-color: #FFCC00;
+    color: white;
+    border: none;
+    padding: 2.4%;
+    border-radius: 10px;
+}
+
+#sortZa{
+    background-color: #FFCC00;
+    color: white;
+    border: none;
+    padding: 2.4%;
+    border-radius: 10px;
+}
+
 textarea:focus,
 input:focus,
 select:focus {
@@ -212,7 +228,7 @@ select {
     display: none;
     /* Inicialmente escondido */
     position: absolute;
-    top: 50px;
+    top: 30%;
     /* Ajuste para aparecer abaixo do botão Filtrar */
     width: 20vw;
     background-color: #fff;
@@ -385,6 +401,7 @@ select:hover option:hover {
     border-radius: 1.2vh;
     border-style: solid;
     border-color: #FFCC00;
+    border-width: 0.22vw;
     font-size: 2.5vh;
     font-weight: 600;
     color: #FFCC00;

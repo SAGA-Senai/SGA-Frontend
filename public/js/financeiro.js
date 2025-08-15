@@ -362,3 +362,20 @@ document.getElementById('textinho').addEventListener('click', () => {
   sortButton.style.borderColor = ''
   sortButtonRev.style.borderColor = ''
 });
+
+function toggleForm() {
+    const formContainer = document.getElementById("formContainer");
+    const overlay = document.getElementById("overlay");
+
+    const isVisible = formContainer.style.display === "block";
+
+    if (!isVisible) {
+        formContainer.style.display = "block";
+        overlay.classList.add("active");
+        document.body.classList.add("modal-open"); // Bloqueia cliques
+    } else {
+        formContainer.style.display = "none";
+        overlay.classList.remove("active");
+        document.body.classList.remove("modal-open");
+    }
+}
