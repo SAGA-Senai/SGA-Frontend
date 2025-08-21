@@ -33,140 +33,109 @@ document.addEventListener("DOMContentLoaded", () => {
 
 //----------SCRIPT PRINCIPAL
 
+let produtos = [];
+let estoqueseguranca = [];
+
+const tabelaOpts = {
+  categoria: '',
+  fabricante: '',
+  ordenacao: '' // 'az', 'za', 'maisRecente', 'maisAntigo'
+};
+
+// ---------- BUSCAR DADOS DO BACK ----------
 async function fetchEstoqueReal() {
-    try {
-        const response = await fetch('http://localhost:8000/estoque');
-        
-        if (!response.ok) {
-            throw new Error('Erro ao buscar produtos: ' + response.statusText);
-        }
+  try {
+    const response = await fetch('http://localhost:8000/estoque');
+    if (!response.ok) throw new Error('Erro ao buscar produtos: ' + response.statusText);
+    produtos = await response.json(); // já vem a lista aqui
+    console.log(produtos)
 
-        const produtos = await response.json();
+    const respSeguranca = await fetch('http://localhost:8000/estoqueseguranca');
+    if (!respSeguranca.ok) throw new Error('Erro ao buscar estoque de segurança: ' + respSeguranca.statusText);
+    estoqueseguranca = await respSeguranca.json();
 
-        const tbody = document.querySelector('#tabela-estoque tbody');
-        tbody.innerHTML = '';
 
-        if (produtos.length === 0) {
-            tbody.innerHTML = '<tr><td colspan="8">Nenhum produtos encontrado</td></tr>';
-            return;
-        }
+    produtos = produtos.map(p => {
+      const extra = estoqueseguranca.find(e => e.codigo === p.codigo);
+      return {
+        ...p,
+        estoque_seguranca: extra ? extra.estoque_seguranca : null
+      };
+    });
+    montarTabela();
 
-        produtos.forEach(produtos => {
+  } catch (error) {
+    alert('Erro ao buscar produtos: ' + error.message);
+  }
+}
 
-            const row = `
-            <tr>
-                <td>${produtos.codigo}</td>
-                <td>${produtos.nome_basico}</td>
-                <td>50</td>
-                <td>${produtos.quant_recente}</td>
-                <td>${produtos.quantidade}</td>
-                <td>${produtos.quantidade}</td>
-                <td>100%</td>
-                <td>OK</td>
-            </tr>
 
-                `;
-            tbody.innerHTML += row;
-            });
-            } catch (error) {
-                alert('Erro ao buscar usuários: ' + error.message);
-            }
+// ---------- MONTAR TABELA ----------
+function montarTabela() {
+  const tbody = document.querySelector('#tabela-estoque tbody');
+  tbody.innerHTML = '';
+
+  let dados = produtos.slice();
+  console.log(dados)
+
+  // aplicar ordenação
+  if (tabelaOpts.ordenacao === 'az') {
+    dados.sort((a, b) => a.nome_basico.localeCompare(b.nome_basico));
+  } else if (tabelaOpts.ordenacao === 'za') {
+    dados.sort((a, b) => b.nome_basico.localeCompare(a.nome_basico));
+  } else if (tabelaOpts.ordenacao === 'maisRecente') {
+    dados.sort((a, b) => new Date(b.data_receb) - new Date(a.data_receb));
+  } else if (tabelaOpts.ordenacao === 'maisAntigo') {
+    dados.sort((a, b) => new Date(a.data_receb) - new Date(b.data_receb));
+  }
+
+  // montar linhas
+  if (dados.length === 0) {
+    tbody.innerHTML = '<tr><td colspan="8">Nenhum produto encontrado</td></tr>';
+    return;
+  }
+
+  dados.forEach(p => {
+    let status = 'OK'
+    if (p.estoque_seguranca >= p.quantidade){
+      status = 'ALERTA!'
     }
+    const row = `
+      <tr>
+        <td>${p.codigo}</td>
+        <td>${p.nome_basico}</td>
+        <td>${p.estoque_seguranca ?? '-'}</td>
+        <td>${p.quant_recente}</td>
+        <td>${p.quantidade}</td>
+        <td>${p.quantidade}</td>
+        <td>100%</td>
+        <td>${status}</td>
+      </tr>`;
+    tbody.innerHTML += row;
+  });
+}
 
-    window.onload = fetchEstoqueReal;
+// ---------- EVENTOS ----------
+document.getElementById('status').addEventListener('change', e => {
+  tabelaOpts.status = e.target.value;
+  montarTabela();
+});
 
-//---------------------LIMPAR FILTRO
+document.getElementById('ordenacao').addEventListener('change', e => {
+  tabelaOpts.ordenacao = e.target.value;
+  montarTabela();
+});
 
+// limpar filtros
 function limparFiltros() {
-    document.getElementById('categoria').value = '';
-    document.getElementById('fabricante').value = '';
-    document.getElementById('codigo').value = '';
+  tabelaOpts.categoria = '';
+  tabelaOpts.fabricante = '';
+  tabelaOpts.ordenacao = '';
+  document.getElementById('categoria').value = '';
+  document.getElementById('fabricante').value = '';
+  document.getElementById('ordenacao').value = '';
+  montarTabela();
 }
-function tirarFiltro(){
-    document.getElementById('categoria').value = '';
-    document.getElementById('fabricante').value = '';
-    
-}
 
-//---------------------------FILTRO BACK END
-
-
-
-//-----------------------FILTRO CATEGORIA
-
-
-
-
-//-----------------------FILTRO FABRICANTE
-
-// document.addEventListener('DOMContentLoaded', async () => {
-//     const filtroFabricante = document.getElementById('fabricante');
-
-//     try {
-//         const response = await fetch('http://localhost:3000/filtro-fabricante');
-//         if (response.ok) {
-//             const fabricantes = await response.json();
-
-//             fabricantes.forEach(fabricante => {
-//                 const option = document.createElement('option');
-//                 option.value = fabricante.FABRICANTE;
-//                 option.textContent = fabricante.FABRICANTE;
-//                 filtroFabricante.appendChild(option);
-//             });
-//         } else {
-//             console.error('Erro ao carregar fabricantes:', await response.text());
-//         }
-//     } catch (error) {
-//         console.error('Erro ao conectar ao servidor:', error);
-//     }
-// });
-
-// function atualizarTabela(dados) {
-//     const tbody = document.querySelector('#tabela-estoque tbody');
-//     tbody.innerHTML = '';
-
-//     if (dados.length === 0) {
-//         tbody.innerHTML = '<tr><td colspan="6">Nenhum produto encontrado</td></tr>';
-//         return;
-//     }
-
-//     dados.forEach(produto => {
-//         const row = `
-//             <tr>
-//                 <td>${produto.CODIGO}</td>
-//                 <td>${produto.NOME_BASICO}</td>
-//                 <td>${produto.DESCRICAO_TECNICA}</td>
-//                 <td>${produto.QUANT}</td>
-//                 <td>${produto.CATEGORIA}</td>
-//                 <td>${produto.FABRICANTE}</td>
-//             </tr>`;
-//         tbody.innerHTML += row;
-//     });
-// }
-
-
-// function atualizarTabela(dados) {
-//     const tbody = document.querySelector('#tabela-estoque tbody');
-//     tbody.innerHTML = '';
-
-//     if (dados.length === 0) {
-//         tbody.innerHTML = '<tr><td colspan="6">Nenhum produto encontrado</td></tr>';
-//         return;
-//     }
-
-//     dados.forEach(produto => {
-//         const row = `
-//             <tr>
-//                 <td>${produto.CODIGO}</td>
-//                 <td>${produto.NOME_BASICO}</td>
-//                 <td>${produto.DESCRICAO_TECNICA}</td>
-//                 <td>${produto.QUANT}</td>
-//                 <td>${produto.CATEGORIA}</td>
-//                 <td>${produto.FABRICANTE}</td>
-//             </tr>`;
-//         tbody.innerHTML += row;
-//     });
-// }
-
-
-     
+// ---------- INÍCIO ----------
+window.onload = fetchEstoqueReal;
