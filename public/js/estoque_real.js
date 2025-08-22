@@ -37,8 +37,7 @@ let produtos = [];
 let estoqueseguranca = [];
 
 const tabelaOpts = {
-  categoria: '',
-  fabricante: '',
+  status: '',
   ordenacao: '' // 'az', 'za', 'maisRecente', 'maisAntigo'
 };
 
@@ -71,14 +70,17 @@ async function fetchEstoqueReal() {
 
 
 // ---------- MONTAR TABELA ----------
-function montarTabela() {
+function montarTabela(lista = produtos) {
   const tbody = document.querySelector('#tabela-estoque tbody');
   tbody.innerHTML = '';
 
-  let dados = produtos.slice();
-  console.log(dados)
-
+  let dados = lista.slice();
   // aplicar ordenação
+
+  if (tabelaOpts.status) {
+    dados = dados.filter(p => p.status === tabelaOpts.status);
+  }
+  
   if (tabelaOpts.ordenacao === 'az') {
     dados.sort((a, b) => a.nome_basico.localeCompare(b.nome_basico));
   } else if (tabelaOpts.ordenacao === 'za') {
@@ -100,6 +102,9 @@ function montarTabela() {
     if (p.estoque_seguranca >= p.quantidade){
       status = 'ALERTA!'
     }
+
+    p.status = status;
+    
     const row = `
       <tr>
         <td>${p.codigo}</td>
