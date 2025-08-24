@@ -61,6 +61,8 @@ function toggleForm() {
     //   });
     // }
   
+    const quantityHint = document.getElementById("quantity_hint");
+
     document.getElementById("product_font").addEventListener("change", (e) => {
       fetchLotes(e.target.value);
     });
@@ -72,7 +74,6 @@ function toggleForm() {
       const quantidadeInput = document.getElementById("quantity_received");
       quantidadeInput.max = quantidadeDisponivel;
   
-      const quantityHint = document.getElementById("quantity_hint");
       quantityHint.textContent = `Estoque disponível: ${quantidadeDisponivel}`;
     });
   
@@ -108,6 +109,8 @@ function toggleForm() {
         const error = await response.json();
         alert("Erro ao registrar saída: " + error.message);
       }
+
+      quantityHint.textContent = "Estoque disponível: "; // Reseta a dica de quantidade
     });
   });
   
