@@ -12,18 +12,6 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 });
 
-
-
-document.getElementById('filtrarBtn').addEventListener('click', function () {
-    const caixote = document.getElementById('caixote');
-    
-    // Alterna a classe 'active' para mostrar ou esconder o formulário de filtro
-    caixote.classList.toggle('active');
-});
-
-
-
-
 document.addEventListener("DOMContentLoaded", () => {
     const filtrarButton = document.querySelector("#filtrar");
     const caixote = document.querySelector("#caixote");
@@ -41,213 +29,183 @@ document.addEventListener("DOMContentLoaded", () => {
         }
     });
 });
-//   muda o botao
-function activateButton(clickedButton) {
-const buttons = document.querySelectorAll('.botoes'); 
-buttons.forEach(button => button.classList.remove('clicked')); 
-clickedButton.classList.add('clicked');}
 
 //----------SCRIPT PRINCIPAL
 
-    async function fetchProdutosCatalogo() {
-        try {
-            const response = await fetch('/ver-catalogo');
-            
-            if (!response.ok) {
-                throw new Error('Erro ao buscar produtos: ' + response.statusText);
-            }
+let produtos = [];
 
-            const produtos = await response.json();
+const tabelaOpts = {
+  categoria: '',
+  fabricante: '',
+  ordenacao: ''
+};
 
-            const tbody = document.querySelector('#tabela-estoque tbody');
-            tbody.innerHTML = '';
+async function fetchProdutosCatalogo() {
+    try {
+        const response = await fetch('http://localhost:8000/ver-catalogo');
+        if (!response.ok) {
+            throw new Error('Erro ao buscar produtos: ' + response.statusText);
+        }
+        produtos = await response.json();
+        console.log(produtos);
 
-            if (produtos.length === 0) {
-                tbody.innerHTML = '<tr><td colspan="6">Nenhum produtos encontrado</td></tr>';
-                return;
-            }
+        preencherSelectFabricantes(produtos)
+        montarTabela();
+    } catch (error) {
+        alert('Erro ao buscar usuários: ' + error.message);
+    }
+}
 
-            produtos.forEach(produtos => {
+function preencherSelectFabricantes(lista) {
+    const selectFabricante = document.getElementById("fabricante");
+    selectFabricante.innerHTML = '<option value="">Todos</option>';
 
-const row = `
-<tr>
-    <td>${produtos.CODIGO}</td>
-    <td>${produtos.NOME_BASICO}</td>
-    <td>${produtos.DESCRICAO_TECNICA}</td>
-    <td>${produtos.QUANT}</td>
-    <td>${produtos.CATEGORIA}</td>
-    <td>${produtos.FABRICANTE}</td>
-    <td class="colunaAbrirDetalhes" id="${produtos.CODIGO}"><button onclick=abrirLinha() class="btnAbrirLinha" id="${produtos.CODIGO}">+</button></td>
-</tr>
-<tr id="linhaDetalhe" style="display: none;">
-    <td colspan="6">
-        <div class="containerLinhaOculta">
-        <div class="containerLinhaDetalhes">
-            <div class="imagemProduto">
-                <img src="https://img.kalunga.com.br/fotosdeprodutos/124209d.jpg" alt="" id="imagemLinhaDetalhe">
-            </div>
-            <div class="endereco-obs">
-                <table>
-                    <thead>
-                        <th colspan="2">Endereçamento</th>
-                    </thead>
-                    <tbody id="tableEnderecamento">
-                        <tr>
-                            <td id="colunaTopico" class="celulaDetalhe">Rua</td>
-                            <td class="celulaDetalhe">${produtos.RUA}</td>
-                        </tr>
-                        <tr>
-                            <td id="colunaTopico" class="celulaDetalhe">Coluna</td>
-                            <td class="celulaDetalhe">${produtos.COLUNA}</td>
-                        </tr>
-                        <tr>
-                            <td id="colunaTopico" class="celulaDetalhe">Andar</td>
-                            <td class="celulaDetalhe">${produtos.ANDAR}</td>
-                        </tr>
-                    </tbody>
-                </table>
-                <table>
-                     <thead>
-                        <th  id="tableObservacoes">Observações</th>
-                    </thead>
-                    <tbody>
-                        <tr>
-                            <td id="celulaObservacoes">${produtos.OBSERVACOES_ADICIONAL}</td>
-                        </tr>
-                    </tbody>
-                </table>
-            </div>
-            <div class="caractProd">
+    const fabricantes = [...new Set(lista.map(p => p.fabricante))].filter(f => f);
 
-                <table>
-                <thead>
-                    <th  colspan="2">Características</th>
-                </thead>
-                <tbody id="tableCaracter">
-                    <tr>
-                        <td id="colunaTopico">Largura</td>
-                        <td class="celulaDetalhe">${produtos.LARGURA} cm</td>
-                    </tr>
-                    <tr>
-                        <td id="colunaTopico">Altura</td>
-                        <td class="celulaDetalhe">${produtos.ALTURA} cm</td>
-                    </tr>
-                    <tr>
-                        <td id="colunaTopico">Profundidade</td>
-                        <td class="celulaDetalhe">${produtos.PROFUNDIDADE} cm</td>
-                    <tr>
-                        <td id="colunaTopico">Peso</td>
-                        <td class="celulaDetalhe">${produtos.PESO} Kg</td>
-                    </tr>
-                    <tr>
-                        <td id="colunaTopico">Frágil</td>
-                        <td class="celulaDetalhe">${produtos.FRAGILIDADE}</td>
-                    </tr>
-                    
-                </tbody>
-                </table>
-            </div>
-        </div>
-        </div>
-    </td>
-</tr>
-    `;
-tbody.innerHTML += row;
-});
-            } catch (error) {
-                alert('Erro ao buscar usuários: ' + error.message);
-            }
+    fabricantes.forEach(f => {
+        const opt = document.createElement("option");
+        opt.value = f;
+        opt.textContent = f;
+        selectFabricante.appendChild(opt);
+    });
+}
+
+function montarTabela(lista = produtos){
+    const tbody = document.querySelector('#tabela-estoque tbody');
+    tbody.innerHTML = '';
+
+    let dados = lista.slice();
+
+    dados.sort((a, b) => a.nome_basico.localeCompare(b.nome_basico));
+
+    if (tabelaOpts.categoria) {
+        dados = dados.filter(p => p.categorias && p.categorias.includes(tabelaOpts.categoria));
+    }
+    if (tabelaOpts.fabricante) {
+        dados = dados.filter(p => p.fabricante === tabelaOpts.fabricante);
     }
 
-    window.onload = fetchProdutosCatalogo;
+    if (tabelaOpts.ordenacao === 'az') {
+        dados.sort((a, b) => a.nome_basico.localeCompare(b.nome_basico));
+    } else if (tabelaOpts.ordenacao === 'za') {
+        dados.sort((a, b) => b.nome_basico.localeCompare(a.nome_basico));
+    }
+
+    if (dados.length === 0) {
+        tbody.innerHTML = '<tr><td colspan="6">Nenhum produtos encontrado</td></tr>';
+        return;
+    }
+
+    dados.forEach(p => {
+
+        const row = `
+        <tr>
+        <td>${p.codigo}</td>
+        <td>${p.nome_basico}</td>
+        <td>${p.descricao_tecnica}</td>
+        <td>${p.quantidade}</td>
+        <td>${p.categoria}</td>
+        <td>${p.fabricante}</td>
+        <td class="colunaAbrirDetalhes" id="${p.codigo}"><button onclick=abrirLinha() class="btnAbrirLinha" id="${p.codigo}">+</button></td>
+        </tr>
+        <tr id="linhaDetalhe" style="display: none;">
+        <td colspan="6">
+            <div class="containerLinhaOculta">
+            <div class="containerLinhaDetalhes">
+                <div class="imagemProduto">
+                    <img src="data:image/png;base64,${p.imagem}"/>
+                </div>
+                <div class="endereco-obs">
+                    <table>
+                        <thead>
+                            <th colspan="2">Endereçamento</th>
+                        </thead>
+                        <tbody id="tableEnderecamento">
+                            <tr>
+                                <td id="colunaTopico" class="celulaDetalhe">Rua</td>
+                                <td class="celulaDetalhe">${p.rua}</td>
+                            </tr>
+                            <tr>
+                                <td id="colunaTopico" class="celulaDetalhe">Coluna</td>
+                                <td class="celulaDetalhe">${p.coluna}</td>
+                            </tr>
+                            <tr>
+                                <td id="colunaTopico" class="celulaDetalhe">Andar</td>
+                                <td class="celulaDetalhe">${p.andar}</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    <table>
+                            <thead>
+                            <th  id="tableObservacoes">Observações</th>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td id="celulaObservacoes">${p.observacoes_adicional}</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <div class="caractProd">
+
+                    <table>
+                    <thead>
+                        <th  colspan="2">Características</th>
+                    </thead>
+                    <tbody id="tableCaracter">
+                        <tr>
+                            <td id="colunaTopico">Largura</td>
+                            <td class="celulaDetalhe">${p.largura} cm</td>
+                        </tr>
+                        <tr>
+                            <td id="colunaTopico">Altura</td>
+                            <td class="celulaDetalhe">${p.altura} cm</td>
+                        </tr>
+                        <tr>
+                            <td id="colunaTopico">Profundidade</td>
+                            <td class="celulaDetalhe">${p.profundidade} cm</td>
+                        <tr>
+                            <td id="colunaTopico">Peso</td>
+                            <td class="celulaDetalhe">${p.peso} Kg</td>
+                        </tr>
+                        <tr>
+                            <td id="colunaTopico">Frágil</td>
+                            <td class="celulaDetalhe">${p.fragilidade}</td>
+                        </tr>
+                        
+                    </tbody>
+                    </table>
+                </div>
+            </div>
+            </div>
+        </td>
+        </tr>
+        `;
+        tbody.innerHTML += row;
+        });
+}
+
+document.getElementById('ordenacao').addEventListener('change', e => {
+  tabelaOpts.ordenacao = e.target.value;
+  montarTabela();
+});
+
+document.getElementById('fabricante').addEventListener('change', e => {
+  tabelaOpts.fabricante = e.target.value;
+  montarTabela();
+});
 
 //---------------------LIMPAR FILTRO
 
 function limparFiltros() {
-    document.getElementById('categoria').value = '';
-    document.getElementById('fabricante').value = '';
-    document.getElementById('dedata').value = '';
-    document.getElementById('atedata').value = '';
-}
-
-//---------------------------FILTRO BACK END
-
-
-
-//-----------------------FILTRO CATEGORIA
-
-
-
-
-//-----------------------FILTRO FABRICANTE
-
-document.addEventListener('DOMContentLoaded', async () => {
-    const filtroFabricante = document.getElementById('fabricante');
-
-    try {
-        const response = await fetch('http://localhost:3000/filtro-fabricante');
-        if (response.ok) {
-            const fabricantes = await response.json();
-
-            fabricantes.forEach(fabricante => {
-                const option = document.createElement('option');
-                option.value = fabricante.FABRICANTE;
-                option.textContent = fabricante.FABRICANTE;
-                filtroFabricante.appendChild(option);
-            });
-        } else {
-            console.error('Erro ao carregar fabricantes:', await response.text());
-        }
-    } catch (error) {
-        console.error('Erro ao conectar ao servidor:', error);
-    }
-});
-
-function atualizarTabela(dados) {
-    const tbody = document.querySelector('#tabela-estoque tbody');
-    tbody.innerHTML = '';
-
-    if (dados.length === 0) {
-        tbody.innerHTML = '<tr><td colspan="6">Nenhum produto encontrado</td></tr>';
-        return;
-    }
-
-    dados.forEach(produto => {
-        const row = `
-            <tr>
-                <td>${produto.CODIGO}</td>
-                <td>${produto.NOME_BASICO}</td>
-                <td>${produto.DESCRICAO_TECNICA}</td>
-                <td>${produto.QUANT}</td>
-                <td>${produto.CATEGORIA}</td>
-                <td>${produto.FABRICANTE}</td>
-            </tr>`;
-        tbody.innerHTML += row;
-    });
+  tabelaOpts.categoria = '';
+  tabelaOpts.fabricante = '';
+  tabelaOpts.ordenacao = '';
+  document.getElementById('categoria').value = '';
+  document.getElementById('fabricante').value = '';
+  document.getElementById('ordenacao').value = '';
+  montarTabela();
 }
 
 
-function atualizarTabela(dados) {
-    const tbody = document.querySelector('#tabela-estoque tbody');
-    tbody.innerHTML = '';
-
-    if (dados.length === 0) {
-        tbody.innerHTML = '<tr><td colspan="6">Nenhum produto encontrado</td></tr>';
-        return;
-    }
-
-    dados.forEach(produto => {
-        const row = `
-            <tr>
-                <td>${produto.CODIGO}</td>
-                <td>${produto.NOME_BASICO}</td>
-                <td>${produto.DESCRICAO_TECNICA}</td>
-                <td>${produto.QUANT}</td>
-                <td>${produto.CATEGORIA}</td>
-                <td>${produto.FABRICANTE}</td>
-            </tr>`;
-        tbody.innerHTML += row;
-    });
-}
-
-
+window.onload = fetchProdutosCatalogo;

@@ -12,7 +12,6 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 });
 
-
 document.addEventListener("DOMContentLoaded", () => {
     const filtrarButton = document.querySelector("#filtrar");
     const caixote = document.querySelector("#caixote");
