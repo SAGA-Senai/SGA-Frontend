@@ -343,7 +343,7 @@ td {
 }
 
 #cabecalho-table {
-    /* position: sticky; */
+    position: sticky;
     top: 0;
 }
 
@@ -390,12 +390,17 @@ td {
 }
 
 .imagemProduto {
-    background-color: beige;
+    background-color: transparent;
     height: 30vh;
     width: 18vw;
     display: flex;
     justify-content: center;
     align-items: center;
+}
+
+.imagemProduto img {
+    height: 100%;
+    width: 90%;
 }
 
 #imagemLinhaDetalhe {
@@ -423,7 +428,7 @@ td {
 
 #tableObservacoes {
     height: 5vh;
-    width: 26.85vw;
+    width: 26.2vw;
     padding: 0.4vh;
     background-color: #F6F5F5;
 }
