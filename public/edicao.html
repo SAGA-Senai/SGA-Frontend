@@ -13,7 +13,7 @@
         href="https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap"
         rel="stylesheet">
     <title>Edição</title>
-<script type="text/javascript" src="https://gc.kis.v2.scr.kaspersky-labs.com/FD126C42-EBFA-4E12-B309-BB3FDD723AC1/main.js?attr=uEwiO6-gG6Ja2t4CBiyqNYQW5OFK_KFF2TNXsOsJCNYGNJoQJvn7lo1QUn3uLp-KvAvXlNt3htlDbDKFKO0l3KLa9AqosrLS2j-qs8VnZ785bt-08ISjTfazX1F-4p8dBD3TARF9fhLqDUEJl5CT_QDBCsbxVUBlYoyn__S0_RspzS-tplgwL__W_BkFKHnY9fowOxN5xPGZ9rrQL3bPfoRkwDSCBPPM1glkIJFS646VUXOYviyQWGDZNCdyKgs8l6kIxeSm0TcqkCc1v1oDBg" charset="UTF-8"></script></head>
+</head>
 
 <body>
     <!-- CABEÇALHO -->
@@ -94,14 +94,19 @@
             <div class="titulo-edicao">Edição</div>
             <!-- /* ---------------------------------------------------------------------------------------- */ -->
             <div class="secao1">
-                <img src="imagens/Foto(Edição).svg" alt="" id="foto">
+                
+                <div class="foto">
+                    Foto do produto:
+                    <input type="file" id="foto" accept="image/*">
+                    <img id="preview-foto" src="">
+                </div>  
                 <div class="informacoesbasicas">
                     <div class="titulo-edicao">Informações Básicas</div>
                     <div class="inputs1">
                         <div class="nome_b">Nome Básico:<input type="text" class="input" id="nome_b"></div>
                         <div class="nome_m">Nome Modificador:<input type="text" class="input" id="nome_m"></div>
                         <div class="categoria">Categoria:<input type="text" class="input" id="categoria"></div>
-                        <div class="cod">Cód. Barras:<input type="number" class="input" id="cod"></div>
+                        <div class="cod">Cód. Barras:<input type="number" class="input" id="cod" readonly></div>
                         <div class="descricao">Descrição Técnica:<input type="text" class="input" id="descricao"></div>
                         <div class="fabricante">Fabricante:<input type="text" class="input" id="fabricante"></div>
                     </div>
@@ -182,8 +187,8 @@
                                 <option value="">Selecione Categoria</option>
                                 <!-- Adicione as opções dinamicamente via JavaScript -->
                             </select>
-                            <label for="fabricante">Fabricante:</label>
-                            <select id="fabricante" name="fabricante">
+                            <label for="fabricante-filtro">Fabricante:</label>
+                            <select id="fabricante-filtro" name="fabricante-filtro">
                                 <option value="">Selecione Fabricante</option>
                                 <!-- Adicione os fabricantes dinamicamente via JavaScript -->
                             </select>
@@ -274,315 +279,71 @@
         </div>
     </div>
 
-    <!-- ----------------------------------------------------------------------------------------------------------------------------- -->
-
-    <script>
-
-        let originalData = {};
-
-        document.addEventListener('click', function (e) {
-            const popupEdicao = document.querySelector('.popup-edicao');
-            const content = document.querySelector('.popup-edicao .conteudo');
-
-            if (popupEdicao && !content.contains(e.target)) {
-                popupEdicao.style.display = 'none';
-            }
-
-            if (e.target.closest('.imagemlapis')) {
-                const row = e.target.closest('tr');
-                const dataCells = row.querySelectorAll('td');
-
-                const mapping = {
-                    CODIGO: 'cod',
-                    NOME_BASICO: 'nome_b',
-                    NOME_MODIFICADOR: 'nome_m',
-                    DESCRICAO_TECNICA: 'descricao',
-                    FABRICANTE: 'fabricante',
-                    OBSERVACOES_ADICIONAL: 'observacao',
-                    UNIDADE: 'unidade',
-                    PRECO_DE_VENDA: 'preco_v',
-                    FRAGILIDADE: 'fragilidade',
-                    ALTURA: 'altura',
-                    LARGURA: 'largura',
-                    PROFUNDIDADE: 'profundidade',
-                    PESO: 'peso',
-                    RUA: 'rua',
-                    COLUNA: 'coluna',
-                    ANDAR: 'andar'
-                };
-
-                originalData = {};
-
-                Object.keys(mapping).forEach((key, index) => {
-                    const inputId = mapping[key];
-                    const cell = dataCells[index];
-                    const inputElement = document.getElementById(inputId);
-
-                    if (cell && inputElement) {
-                        if (inputId === 'fragilidade') {
-                            const text = cell.textContent.trim().toLowerCase();
-                            const isFragile = text === 'sim' || text === '1' || text === 'true';
-                            document.getElementById('fragilidade-sim').checked = isFragile;
-                            document.getElementById('fragilidade-nao').checked = !isFragile;
-                            originalData['fragilidade'] = isFragile ? 1 : 0;
-                        } else {
-                            const value = cell.textContent.trim();
-                            inputElement.value = value;
-                            inputElement.setAttribute('data-original', value);
-                            originalData[inputId] = value;
-                        }
-                    }
-                });
-
-                document.getElementById('fragilidade-sim').setAttribute('data-original', originalData['fragilidade']);
-                document.getElementById('fragilidade-nao').setAttribute('data-original', originalData['fragilidade']);
-
-                popupEdicao.style.display = 'flex';
-            }
-        });
-
-        document.querySelector('.salvar_edicao').addEventListener('click', async function () {
-            const mapping = {
-                codigo: 'cod',
-                nome_basico: 'nome_b',
-                nome_modificador: 'nome_m',
-                descricao_tecnica: 'descricao',
-                fabricante: 'fabricante',
-                observacoes_adicional: 'observacao',
-                unidade: 'unidade',
-                preco_venda: 'preco_v',
-                fragilidade: 'fragilidade',
-                altura: 'altura',
-                largura: 'largura',
-                profundidade: 'profundidade',
-                peso: 'peso',
-                rua: 'rua',
-                coluna: 'coluna',
-                andar: 'andar'
-            };
-
-            const updatedData = {};
-            let codigo = null;
-
-            Object.keys(mapping).forEach(key => {
-                const inputId = mapping[key];
-                const inputElement = document.getElementById(inputId);
-                let newValue;
-
-                if (inputId === 'fragilidade') {
-                    newValue = document.getElementById('fragilidade-sim').checked ? 1 : 0;
-                } else {
-                    newValue = inputElement?.value?.trim() || '';
-                }
-
-                if (key === 'codigo') {
-                    codigo = newValue;
-                    return;
-                }
-
-                const originalValue = inputElement?.getAttribute('data-original');
-
-                if (originalValue == null || newValue != originalValue) {
-                    updatedData[key] = inputId === 'fragilidade' ? Number(newValue) : newValue;
-                }
-            });
-
-            if (!codigo) {
-                alert('Código do produto não encontrado.');
-                return;
-            }
-
-            if (Object.keys(updatedData).length === 0) {
-                alert('Nenhuma alteração detectada.');
-                return;
-            }
-
-            let url_editar = `http://127.0.0.1:8000/api/editar_produto/${codigo}`;
-
-            try {
-                const response = await fetch(url_editar, {
-                    method: 'PATCH',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify(updatedData),
-                });
-
-                if (response.ok) {
-                    alert('Produto atualizado com sucesso!');
-                    console.log('Dados enviados:', updatedData);
-                    location.reload();
-                } else {
-                    const errorText = await response.text();
-                    console.error('Erro ao atualizar o produto:', response.status, errorText);
-                    alert(`Erro ao atualizar o produto: ${response.status}`);
-                }
-            } catch (error) {
-                console.error('Erro:', error);
-                alert('Erro ao enviar os dados.');
-            }
-        });
-
-
-        // <!-- -------------------------------------HAMBURGUER----------------------------------------------------------- -->
-
-        document.addEventListener('DOMContentLoaded', function () {
-
-            const estoqueItem = document.querySelector('.estoque-item');
-            const estoqueSubMenu = document.getElementById('estoque-submenu');
-            const estoqueLink = document.getElementById('esto');
-            const iconeEstoque = estoqueLink.querySelector('.boxes-of-good-good');
-
-            const submenuLinks = estoqueSubMenu.querySelectorAll('a');
-            submenuLinks.forEach(link => {
-                link.addEventListener('click', function (event) {
-                    event.stopPropagation();
-                });
-            });
-
-            estoqueItem.addEventListener('click', function (event) {
-                event.preventDefault();
-
-                estoqueItem.classList.toggle('active');
-                if (estoqueItem.classList.contains('active')) {
-                    estoqueSubMenu.style.display = "block";
-                    estoqueItem.style.backgroundColor = "#000";
-                    estoqueLink.style.color = "#319DF6";
-                    iconeEstoque.style.backgroundImage = "url(\"data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Cpath fill='%23319df6' d='M10 4v11h12V4zm2 2h2v4l2-2l2 2V6h2v7h-8zM3 17v11h12V17zm14 0v11h12V17zM5 19h2v4l2-2l2 2v-4h2v7H5zm14 0h2v4l2-2l2 2v-4h2v7h-8z'/%3E%3C/svg%3E\")";
-                } else {
-                    estoqueSubMenu.style.display = "none";
-                    estoqueItem.style.backgroundColor = "";
-                    estoqueLink.style.color = "";
-                    iconeEstoque.style.backgroundImage = "";
-                }
-            });
-
-            // Fecha o dropdown ao clicar fora
-            document.addEventListener('click', function (event) {
-                if (!estoqueItem.contains(event.target)) {
-                    estoqueItem.classList.remove('active');
-                    estoqueSubMenu.style.display = "none";
-                    estoqueItem.style.backgroundColor = "";
-                    estoqueLink.style.color = "";
-                    iconeEstoque.style.backgroundImage = "";
-                }
-            });
-
-
-        });
-
-        // <!-- -------------------------------------Mostrar a Tabela----------------------------------------------------------- -->
-
-        let API_URL = "http://127.0.0.1:8000/api/ver_produtos" 
-
-        async function fetchProdutosCatalogo() {
-            try {
-                const response = await fetch(API_URL);
-
-                if (!response.ok) {
-                    throw new Error('Erro ao buscar produtos: ' + response.statusText);
-                }
-
-                const produtos = await response.json();
-
-                const tbody = document.querySelector('#tabela-estoque tbody');
-                tbody.innerHTML = '';
-
-                if (produtos.length === 0) {
-                    tbody.innerHTML = '<tr><td colspan="6">Nenhum produto encontrado</td></tr>';
-                    return;
-                }
-
-                produtos.forEach(produto => {
-                    const row = `
-                    <tr id="produto-${produto.codigo}">
-                        <td>${produto.codigo}</td>
-                        <td>${produto.nome_basico}</td>
-                        <td>${produto.nome_modificador}</td>
-                        <td>${produto.descricao_tecnica}</td>
-                        <td>${produto.fabricante}</td>
-                        <td class="none">${produto.observacoes_adicional}</td>
-                        <td class="none">${produto.unidade}</td>
-                        <td class="none">${produto.preco_de_venda}</td>
-                        <td class="none">${produto.fragilidade}</td>
-                        <td class="none">${produto.altura}</td>
-                        <td class="none">${produto.largura}</td>
-                        <td class="none">${produto.profundidade}</td>
-                        <td class="none">${produto.peso}</td>
-                        <td class="none">${produto.rua}</td>
-                        <td class="none">${produto.coluna}</td>
-                        <td class="none">${produto.andar}</td>
-                        <td class="lixeira">
-                            <img src="imagens/Lixeira(Normal).svg" alt="Lixeira" class="imagemlixeira" onmouseover="this.src='imagens/Lixeira(Modificado).svg';" onmouseout="this.src='imagens/Lixeira(Normal).svg';" onclick="excluirProduto(${produto.codigo})">
-                        </td>
-                        <td class="lapis">
-                            <img src="imagens/Lapis(Normal).svg" alt="Lápis" class="imagemlapis" onmouseover="this.src='imagens/Lapis(Modificado).svg';" onmouseout="this.src='imagens/Lapis(Normal).svg';">
-                        </td>
-                    </tr>`;
-                    tbody.innerHTML += row;
-                });
-            } catch (error) {
-                alert('Erro ao buscar produtos: ' + error.message);
-            }
-        }
-
-        // <!-- ------------------------------------- Deletar ----------------------------------------------------------- -->
-
-        function excluirProduto(codigo) {
-            codigo_deletar = codigo;  // Salva o código do produto a ser excluído
-            document.getElementById('senha-popup').style.display = 'flex';  // Exibe o pop-up
-            console.log(codigo)
-        }
-
-        function verificarSenha() {
-            const senha = document.getElementById('senha-input').value;
-
-            if (senha !== 'professor123') {
-                alert('Senha incorreta!');
-                return;
-            }
-
-            fetch(`http://127.0.0.1:8000/api/deletar_produto/${codigo_deletar}`, {
-                method: 'DELETE'
-            })
-                .then(response => {
-                    if (!response.ok) {
-                        throw new Error("Erro ao excluir produto");
-                    }
-                    return response.text();
-                })
-                .then(message => {  
-                    console.log(`${message}, DELETADO COM SUCESSO`);
-                    fetchProdutosCatalogo();
-                    if (message.includes('sucesso')) {
-                        document.querySelector(`#produto-${codigo_deletar}`).remove();
-                        fetchProdutosCatalogo();
-                    } 
-                })
-                .catch(error => {
-                    console.error('Erro:', error);
-                    alert('Erro ao excluir produto');
-                });
-
-            // Fecha o pop-up
-            cancelarSenha();
-            window.onload = fetchProdutosCatalogo;
-        }
-
-        function cancelarSenha() {
-            document.getElementById('senha-popup').style.display = 'none';
-            document.getElementById('senha-input').value = '';  // Limpa o campo da senha
-        }
-
-        
-        window.onload = fetchProdutosCatalogo;
-
-    </script>
-
-<!-- ----------------------------------------------------------------------------------------------------------------------------- -->
-
     <div class="final"><img src="imagens/logo(escura).svg" id="logo">©DEVS-SENAI-SP - 2024</div>
 
 
 </body>
+
+<script>
+    // <!-- -------------------------------------HAMBURGUER----------------------------------------------------------- -->
+
+    document.addEventListener('DOMContentLoaded', function () {
+
+        const estoqueItem = document.querySelector('.estoque-item');
+        const estoqueSubMenu = document.getElementById('estoque-submenu');
+        const estoqueLink = document.getElementById('esto');
+        const iconeEstoque = estoqueLink.querySelector('.boxes-of-good-good');
+
+        const submenuLinks = estoqueSubMenu.querySelectorAll('a');
+        submenuLinks.forEach(link => {
+            link.addEventListener('click', function (event) {
+                event.stopPropagation();
+            });
+        });
+
+        estoqueItem.addEventListener('click', function (event) {
+            event.preventDefault();
+
+            estoqueItem.classList.toggle('active');
+            if (estoqueItem.classList.contains('active')) {
+                estoqueSubMenu.style.display = "block";
+                estoqueItem.style.backgroundColor = "#000";
+                estoqueLink.style.color = "#319DF6";
+                iconeEstoque.style.backgroundImage = "url(\"data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Cpath fill='%23319df6' d='M10 4v11h12V4zm2 2h2v4l2-2l2 2V6h2v7h-8zM3 17v11h12V17zm14 0v11h12V17zM5 19h2v4l2-2l2 2v-4h2v7H5zm14 0h2v4l2-2l2 2v-4h2v7h-8z'/%3E%3C/svg%3E\")";
+            } else {
+                estoqueSubMenu.style.display = "none";
+                estoqueItem.style.backgroundColor = "";
+                estoqueLink.style.color = "";
+                iconeEstoque.style.backgroundImage = "";
+            }
+        });
+
+        // Fecha o dropdown ao clicar fora
+        document.addEventListener('click', function (event) {
+            if (!estoqueItem.contains(event.target)) {
+                estoqueItem.classList.remove('active');
+                estoqueSubMenu.style.display = "none";
+                estoqueItem.style.backgroundColor = "";
+                estoqueLink.style.color = "";
+                iconeEstoque.style.backgroundImage = "";
+            }
+        });
+
+
+    });
+
+    document.getElementById('formPesquisa').addEventListener('submit', (e) => {
+        e.preventDefault();
+        const termo = document.getElementById('codigo').value.trim().toLowerCase();
+
+        const filtrados = produtos.filter(p =>
+            String(p.codigo).includes(termo) ||
+            (p.nome_basico && p.nome_basico.toLowerCase().includes(termo))
+        );
+
+        montarTabela(filtrados);
+    });
+</script>
 
 <script src="js/edicao.js"></script>
 <script src="js/navbar.js"></script>

@@ -1,17 +1,3 @@
-document.addEventListener('DOMContentLoaded', () => {
-    document.addEventListener('click', (event) => {
-        if (event.target && event.target.classList.contains('btnAbrirLinha')) {
-            const linhaDetalhe = event.target.closest('tr').nextElementSibling;
-
-            if (linhaDetalhe) {
-                const isHidden = linhaDetalhe.style.display === 'none';
-                linhaDetalhe.style.display = isHidden ? 'table-row' : 'none';
-                event.target.textContent = isHidden ? '-' : '+';
-            }
-        }
-    });
-});
-
 document.addEventListener("DOMContentLoaded", () => {
     const filtrarButton = document.querySelector("#filtrar");
     const caixote = document.querySelector("#caixote");
