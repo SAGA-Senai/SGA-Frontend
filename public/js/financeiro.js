@@ -78,6 +78,7 @@ let categorias = [];
 
 // Busca os dados do backend
 async function fetchData(event = null, num = 0) {
+  console.log('teste' + num)
   try {
     // Se um número for passado, busca por ele, senão busca todos
     const recebimento_url = num ? `http://127.0.0.1:8000/recebimento/${num}` : 'http://127.0.0.1:8000/recebimento';
