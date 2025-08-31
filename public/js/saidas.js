@@ -351,7 +351,7 @@ function montarTabela() {
     detailsRow.innerHTML = `
       <div class="details-left">
         <div class="image-placeholder">
-          <img src="${saida.imagem}" alt="Ícone de imagem">
+          <img src="data:image/png;base64,${saida.imagem}" alt="Ícone de imagem">
         </div>
       </div>
       <div class="details-right">

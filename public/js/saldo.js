@@ -131,11 +131,12 @@ function montarTabela() {
         LOTE: saldo.lote,
         QUANT_RECEBIMENTO: 0,
         QUANT_SAIDA: 0,
-        saldo: 0,
+        SALDO: 0,
         VALIDADE: saldo.validade,
         FABRICANTE: saldo.fabricante,
         PRECO_DE_VENDA: saldo.preco_de_venda,
-        FRAGILIDADE: saldo.fragilidade
+        FRAGILIDADE: saldo.fragilidade,
+        IMAGEM: saldo.imagem
       };
     }
 
@@ -146,7 +147,7 @@ function montarTabela() {
     // Atualiza o saldo acumulado (Recebimento - Saída)
     saldosAcumulados[key].QUANT_RECEBIMENTO += quantRecebida;
     saldosAcumulados[key].QUANT_SAIDA += quantSaida;
-    saldosAcumulados[key].saldo += quantRecebida - quantSaida;
+    saldosAcumulados[key].SALDO += quantRecebida - quantSaida;
   });
 
   // Criação da tabela com os saldos acumulados
@@ -159,7 +160,7 @@ function montarTabela() {
       <div class="cell"><strong>Lote</strong><span>${saldo.LOTE}</span></div>
       <div class="cell"><strong>Quantidade Recebida</strong><span>${saldo.QUANT_RECEBIMENTO}</span></div>
       <div class="cell"><strong>Quantidade Saída</strong><span>${saldo.QUANT_SAIDA}</span></div>
-      <div class="cell"><strong>Saldo</strong><span>${saldo.saldo}</span></div>
+      <div class="cell"><strong>Saldo</strong><span>${saldo.SALDO}</span></div>
     `;
 
     // Cria a linha de detalhes
@@ -169,7 +170,7 @@ function montarTabela() {
     detailsRow.innerHTML = `
       <div class="details-left">
         <div class="image-placeholder">
-          <img src="${saldo.imagem}" alt="Ícone de imagem">
+          <img src="data:image/png;base64,${saldo.IMAGEM}" alt="Ícone de imagem">
         </div>
       </div>
       <div class="details-right">

@@ -370,25 +370,25 @@
       dados.forEach((filtrado) => {
         linhasTabela += `
           <div class="row main-row" onclick="this.nextElementSibling.style.display = this.nextElementSibling.style.display === 'none' ? 'flex' : 'none'">
-            <div class="cell"><strong>Data</strong><span>${filtrado.DATA_RECEB}</span></div>
-            <div class="cell"><strong>Código</strong><span>${filtrado.CODIGO}</span></div>
-            <div class="cell"><strong>Item</strong><span>${filtrado.NOME_BASICO}</span></div>
-            <div class="cell"><strong>Fornecedor</strong><span>${filtrado.FORNECEDOR}</span></div>
-            <div class="cell"><strong>Preço Aquisição</strong><span>${filtrado.PRECO_DE_AQUISICAO} R$</span></div>
-            <div class="cell"><strong>Quantidade</strong><span>${filtrado.QUANT}</span></div>
+            <div class="cell"><strong>Data</strong><span>${filtrado.data_receb}</span></div>
+            <div class="cell"><strong>Código</strong><span>${filtrado.codigo}</span></div>
+            <div class="cell"><strong>Item</strong><span>${filtrado.nome_basico}</span></div>
+            <div class="cell"><strong>Fornecedor</strong><span>${filtrado.fornecedor}</span></div>
+            <div class="cell"><strong>Preço Aquisição</strong><span>${filtrado.preco_de_aquisicao} R$</span></div>
+            <div class="cell"><strong>Quantidade</strong><span>${filtrado.quant}</span></div>
           </div>
           <div class="row details-row" style="display: none;">
             <div class="details-left">
               <div class="image-placeholder">
-                <img src="${filtrado.IMAGEM}" alt="Ícone de imagem">
+                <img src="data:image/png;base64,${filtrado.imagem}" alt="Ícone de imagem">
               </div>
             </div>
             <div class="details-right">
-              <div class="detail-item"><strong>Fragilidade:</strong><span>${filtrado.FRAGILIDADE}</span></div>
-              <div class="detail-item"><strong>Fabricante:</strong><span>${filtrado.FABRICANTE}</span></div>
-              <div class="detail-item"><strong>Lote:</strong><span>${filtrado.LOTE}</span></div>
-              <div class="detail-item"><strong>Validade:</strong><span>${filtrado.VALIDADE}</span></div>
-              <div class="detail-item"><strong>Preço Venda:</strong><span>${filtrado.PRECO_DE_VENDA} R$</span></div>
+              <div class="detail-item"><strong>Fragilidade:</strong><span>${filtrado.fragilidade}</span></div>
+              <div class="detail-item"><strong>Fabricante:</strong><span>${filtrado.fabricante}</span></div>
+              <div class="detail-item"><strong>Lote:</strong><span>${filtrado.lote}</span></div>
+              <div class="detail-item"><strong>Validade:</strong><span>${filtrado.validade}</span></div>
+              <div class="detail-item"><strong>Preço Venda:</strong><span>${filtrado.preco_de_venda} R$</span></div>
             </div>
           </div>
         `;
