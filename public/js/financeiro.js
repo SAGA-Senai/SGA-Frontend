@@ -93,11 +93,11 @@ async function fetchData(event = null, num = 0) {
     recebimentos = dados; // salva os recebimentos
 
     dados.forEach(recebimento => {
-      if (!fabricantes.includes(recebimento.FABRICANTE)) { // salva os fabricantes
-        fabricantes.push(recebimento.FABRICANTE);
+      if (!fabricantes.includes(recebimento.fabricante)) { // salva os fabricantes
+        fabricantes.push(recebimento.fabricante);
       };
-      if (!categorias.includes(recebimento.CATEGORIA) && recebimento.CATEGORIA) { // salva as categorias
-        categorias.push(recebimento.CATEGORIA);
+      if (!categorias.includes(recebimento.categoria) && recebimento.categoria) { // salva as categorias
+        categorias.push(recebimento.categoria);
       };
       if (!fornecedores.includes(recebimento.FORNECEDOR)) { // salva os fornecedores
         fornecedores.push(recebimento.FORNECEDOR);
@@ -173,17 +173,17 @@ function montarTabela() {
 
   // organiza a array se o sort estiver sendo usado
   if (tabelaOpts.sort === 'az') {
-    tabelaData.sort((a, b) => a.NOME_BASICO.localeCompare(b.NOME_BASICO));
+    tabelaData.sort((a, b) => a.nome_basico.localeCompare(b.nome_basico));
   } else if (tabelaOpts.sort === 'za') {
-    tabelaData.sort((a, b) => b.NOME_BASICO.localeCompare(a.NOME_BASICO)); // inverte a array
+    tabelaData.sort((a, b) => b.nome_basico.localeCompare(a.nome_basico)); // inverte a array
   };
 
   tabelaData.forEach(recebimento => {
     // filtra os itens caso necessário
-    if (tabelaOpts.categoria && tabelaOpts.categoria != recebimento.CATEGORIA) {
+    if (tabelaOpts.categoria && tabelaOpts.categoria != recebimento.categoria) {
       return; // faz a função pular para o próximo item, igual um continue
     };
-    if (tabelaOpts.fabricante && tabelaOpts.fabricante != recebimento.FABRICANTE) {
+    if (tabelaOpts.fabricante && tabelaOpts.fabricante != recebimento.fabricante) {
       return;
     };
     if (tabelaOpts.fornecedor && tabelaOpts.fornecedor != recebimento.FORNECEDOR) {
@@ -191,8 +191,8 @@ function montarTabela() {
     };
     if (
       tabelaOpts.datas.length > 0 &&
-      (tabelaOpts.datas[0] > parseDataBr(recebimento.DATA_RECEB) ||
-      tabelaOpts.datas[1] < parseDataBr(recebimento.DATA_RECEB))
+      (tabelaOpts.datas[0] > parseDataBr(recebimento.data_receb) ||
+      tabelaOpts.datas[1] < parseDataBr(recebimento.data_receb))
     ) {
       return;
     };
@@ -201,12 +201,12 @@ function montarTabela() {
     const mainRow = document.createElement('div');
     mainRow.classList.add('row', 'main-row');
     mainRow.innerHTML = `
-      <div class="cell"><strong>Data</strong><span>${recebimento.DATA_RECEB}</span></div>
-      <div class="cell"><strong>Código</strong><span>${recebimento.CODIGO}</span></div>
-      <div class="cell"><strong>Item</strong><span>${recebimento.NOME_BASICO}</span></div>
-      <div class="cell"><strong>Fornecedor</strong><span>${recebimento.FORNECEDOR}</span></div>
-      <div class="cell"><strong>Preço Aquisição</strong><span>${recebimento.PRECO_DE_AQUISICAO} R$</span></div>
-      <div class="cell"><strong>Quantidade</strong><span>${recebimento.QUANT}</span></div>
+      <div class="cell"><strong>Data</strong><span>${recebimento.data_receb}</span></div>
+      <div class="cell"><strong>Código</strong><span>${recebimento.codigo}</span></div>
+      <div class="cell"><strong>Item</strong><span>${recebimento.nome_basico}</span></div>
+      <div class="cell"><strong>Fornecedor</strong><span>${recebimento.fornecedor}</span></div>
+      <div class="cell"><strong>Preço Aquisição</strong><span>${recebimento.preco_de_aquisicao} R$</span></div>
+      <div class="cell"><strong>Quantidade</strong><span>${recebimento.quant}</span></div>
     `;
 
     // Cria a linha de detalhes
@@ -216,15 +216,15 @@ function montarTabela() {
     detailsRow.innerHTML = `
       <div class="details-left">
         <div class="image-placeholder">
-          <img src="${recebimento.IMAGEM}" alt="Ícone de imagem">
+          <img src="data:image/png;base64,${recebimento.imagem}" alt="Ícone de imagem">
         </div>
       </div>
       <div class="details-right">
-        <div class="detail-item"><strong>Fragilidade:</strong><span>${recebimento.FRAGILIDADE}</span></div>
-        <div class="detail-item"><strong>Fabricante:</strong><span>${recebimento.FABRICANTE}</span></div>
-        <div class="detail-item"><strong>Lote:</strong><span>${recebimento.LOTE}</span></div>
-        <div class="detail-item"><strong>Validade:</strong><span>${recebimento.VALIDADE}</span></div>
-        <div class="detail-item"><strong>Preço Venda:</strong><span>${recebimento.PRECO_DE_VENDA} RS</span></div>
+        <div class="detail-item"><strong>Fragilidade:</strong><span>${recebimento.fragilidade}</span></div>
+        <div class="detail-item"><strong>Fabricante:</strong><span>${recebimento.fabricante}</span></div>
+        <div class="detail-item"><strong>Lote:</strong><span>${recebimento.lote}</span></div>
+        <div class="detail-item"><strong>Validade:</strong><span>${recebimento.validade}</span></div>
+        <div class="detail-item"><strong>Preço Venda:</strong><span>${recebimento.preco_de_venda} RS</span></div>
       </div>
     `;
 
