@@ -193,11 +193,12 @@
 
         let chart; // Variável global para armazenar o gráfico
         const colors = ['#FF4560', '#008FFB', '#00E396', '#FEB019', '#775DD0', '#546E7A', '#26A69A', '#D10CE8'];
+        const meses = ['Jan', 'Fev', 'Mar', 'Abr', 'Mai', 'Jun', 'Jul', 'Ago', 'Set', 'Out', 'Nov', 'Dez'];
 
         // Função para buscar dados da API
         async function fetchData() {
             try {
-                const response = await fetch('http://localhost:3000/telaInicial');
+                const response = await fetch('http://127.0.0.1:8000/telaInicial');
                 const data = await response.json();
                 return data;
             } catch (error) {
@@ -229,22 +230,14 @@
     }
     : {
         series: [
-            { name: 'Saída', data: [31, 40, 28, 51, 42, 109, 100] },
-            { name: 'Recebimento', data: [11, 32, 45, 32, 34, 52, 41] }
+            { name: 'Saída', data: data.issues },
+            { name: 'Recebimento', data: data.receipts }
         ],
         chart: { height: 350, type: 'area' },
         stroke: { curve: 'smooth' },
         xaxis: {
             type: 'category',
-            categories: [
-                "2018-09-19",
-                "2018-09-20",
-                "2018-09-21",
-                "2018-09-22",
-                "2018-09-23",
-                "2018-09-24",
-                "2018-09-25"
-            ],
+            categories: data.days,
             labels: {
                 format: 'dd/MM/yyyy',
                 style: {
@@ -265,6 +258,7 @@
         }
 
         // Alternar entre os gráficos
+        let counter = 0; // variável que define o tipo do gráfico
         function trocarGrafico() {
             const checkbox = document.getElementById('mudar');
             renderChart(checkbox.checked ? 'line' : 'bar');
