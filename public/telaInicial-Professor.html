@@ -229,8 +229,9 @@
             const monthsData = [];
             data.days.forEach((day, index) => {
                 const month = new Date(day).getMonth();
+                const year = new Date(day).getFullYear();
                 // organiza os meses
-                if(!monthsData.includes(meses[month])) monthsData.push(meses[month])
+                if(!monthsData.includes(meses[month]+"-"+year)) monthsData.push(meses[month]+"-"+year)
                 
                 // organiza as movimentações mensais
                 const issue = parseInt(data.issues[index]); 
@@ -326,7 +327,7 @@
         function trocarGrafico(novoIndex) {
             selectedIndex = novoIndex % 3; // garante que o índice fique entre 0 e 2
             renderChart();
-            
+
         }
 
         // Renderizar o gráfico inicial (barras)
