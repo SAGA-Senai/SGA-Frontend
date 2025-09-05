@@ -16,8 +16,7 @@
 <section>
     <div class="container-grafico">
     <div id="chart" ></div> 
-    <input type="checkbox" id="mudar" onclick="trocarGrafico()"> 
-    <label for="mudar" id="Alternar"><span>Alternar Gráfico</span></label>
+    <button id="Alternar" onclick="trocarGrafico(selectedIndex + 1)"><span>Alternar Gráfico</span></button>
     
 </div>
 <div class="button-container">
@@ -193,7 +192,10 @@
 
         let chart; // Variável global para armazenar o gráfico
         const colors = ['#FF4560', '#008FFB', '#00E396', '#FEB019', '#775DD0', '#546E7A', '#26A69A', '#D10CE8'];
+
+        // Configurações para o gráfico
         const meses = ['Jan', 'Fev', 'Mar', 'Abr', 'Mai', 'Jun', 'Jul', 'Ago', 'Set', 'Out', 'Nov', 'Dez'];
+        let selectedIndex = 0;
 
         // Função para buscar dados da API
         async function fetchData() {
@@ -208,63 +210,126 @@
         }
 
         // Função para renderizar o gráfico
-        async function renderChart(type) {
+        async function renderChart() {
             const data = await fetchData();
 
-            const options = type === 'bar'
-    ? {
-        series: [{ data: data.values }],
-        chart: { height: 350, type: 'bar' },
-        colors: colors,
-        plotOptions: {
-            bar: { columnWidth: '45%', distributed: true }
-        },
-        dataLabels: { enabled: false },
-        legend: { show: false },
-        xaxis: {
-            categories: data.categories,
-            labels: {
-                style: { colors: colors, fontSize: '12px' }
-            }
-        }
-    }
-    : {
-        series: [
-            { name: 'Saída', data: data.issues },
-            { name: 'Recebimento', data: data.receipts }
-        ],
-        chart: { height: 350, type: 'area' },
-        stroke: { curve: 'smooth' },
-        xaxis: {
-            type: 'category',
-            categories: data.days,
-            labels: {
-                format: 'dd/MM/yyyy',
-                style: {
-                    colors: colors,
-                    fontSize: '12px'
+            // arruma os dias para o sistema brasileiro
+            const days = [];
+            data.days.forEach(dia => {
+                const diaBr = new Date(dia)
+                days.push(diaBr.toLocaleDateString('pt-BR'));
+            });
+
+            // ------------------- Agrupar por mês -----------------------------
+            let counter = -1; // variável para checar os meses
+            let ind = -1; // indice das arrays mensais
+            const dataMensal = {
+                issues: [],
+                receipts: []
+            }; 
+            const monthsData = [];
+            data.days.forEach((day, index) => {
+                const month = new Date(day).getMonth();
+                // organiza os meses
+                if(!monthsData.includes(meses[month])) monthsData.push(meses[month])
+                
+                // organiza as movimentações mensais
+                const issue = parseInt(data.issues[index]); 
+                const receipt = parseInt(data.receipts[index]);
+
+                if(counter != month) {
+                    dataMensal.issues.push(issue);
+                    dataMensal.receipts.push(receipt);
+                    counter = month;
+                    ind += 1;
+                } else {
+                    dataMensal.issues[ind] += issue;
+                    dataMensal.receipts[ind] += receipt;
                 }
-            }
-        },
-        tooltip: {
-            x: {
-                format: 'dd/MM/yyyy'
-            }
-        }
-    };
+            });
+
+            // ------------------ Organiza as opções do gráfico ---------------------
+            const optionsType = [
+                { // Barras
+                    series: [{ data: data.values }],
+                    chart: { height: 350, type: 'bar' },
+                    colors: colors,
+                    plotOptions: {
+                        bar: { columnWidth: '45%', distributed: true }
+                    },
+                    dataLabels: { enabled: false },
+                    legend: { show: false },
+                    xaxis: {
+                        categories: data.categories,
+                        labels: {
+                            style: { colors: colors, fontSize: '12px' }
+                        }
+                    }
+                },
+                { // Diário
+                    series: [
+                        { name: 'Saída', data: data.issues },
+                        { name: 'Recebimento', data: data.receipts }
+                    ],
+                    chart: { height: 350, type: 'area' },
+                    stroke: { curve: 'smooth' },
+                    xaxis: {
+                        type: 'category',
+                        categories: days,
+                        labels: {
+                            format: 'dd/MM/yyyy',
+                            style: {
+                                colors: colors,
+                                fontSize: '12px'
+                            }
+                        }
+                    },
+                    tooltip: {
+                        x: {
+                            format: 'dd/MM/yyyy'
+                        }
+                    }
+                },
+                { // Mensal
+                    series: [
+                        { name: 'Saída', data: dataMensal.issues },
+                        { name: 'Recebimento', data: dataMensal.receipts }
+                    ],
+                    chart: { height: 350, type: 'area' },
+                    stroke: { curve: 'smooth' },
+                    xaxis: {
+                        type: 'category',
+                        categories: monthsData,
+                        labels: {
+                            format: 'dd/MM/yyyy',
+                            style: {
+                                colors: colors,
+                                fontSize: '12px'
+                            }
+                        }
+                    },
+                    tooltip: {
+                        x: {
+                            format: 'dd/MM/yyyy'
+                        }
+                    }
+                }
+            ];
+              
+            const options = optionsType[selectedIndex];
             if (chart) chart.destroy(); // Destroi o gráfico anterior
             chart = new ApexCharts(document.querySelector("#chart"), options);
             chart.render();
-        }
+        };
 
         // Alternar entre os gráficos
         let counter = 0; // variável que define o tipo do gráfico
-        function trocarGrafico() {
-            const checkbox = document.getElementById('mudar');
-            renderChart(checkbox.checked ? 'line' : 'bar');
+        function trocarGrafico(novoIndex) {
+            selectedIndex = novoIndex % 3; // garante que o índice fique entre 0 e 2
+            renderChart();
         }
 
         // Renderizar o gráfico inicial (barras)
-        renderChart('bar');
+        renderChart();
     </script>
 </html>
