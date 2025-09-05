@@ -220,7 +220,7 @@
             });
 
             // ------------------- Agrupar por mês -----------------------------
-            let counter = -1; // variável para checar os meses
+            let lastMonth = -1; // variável para checar os meses
             let ind = -1; // indice das arrays mensais
             const dataMensal = {
                 issues: [],
@@ -231,16 +231,16 @@
                 const month = new Date(day).getMonth();
                 const year = new Date(day).getFullYear();
                 // organiza os meses
-                if(!monthsData.includes(meses[month]+"-"+year)) monthsData.push(meses[month]+"-"+year)
+                if(!monthsData.includes(meses[month]+"-"+year)) monthsData.push(meses[month]+"-"+year);
                 
                 // organiza as movimentações mensais
                 const issue = parseInt(data.issues[index]); 
                 const receipt = parseInt(data.receipts[index]);
 
-                if(counter != month) {
+                if(lastMonth != month) {
                     dataMensal.issues.push(issue);
                     dataMensal.receipts.push(receipt);
-                    counter = month;
+                    lastMonth = month;
                     ind += 1;
                 } else {
                     dataMensal.issues[ind] += issue;
@@ -249,6 +249,7 @@
             });
 
             // ------------------ Organiza as opções do gráfico ---------------------
+            const daysLength = days.length; 
             const optionsType = [
                 { // Barras
                     series: [{ data: data.values }],
@@ -266,16 +267,16 @@
                         }
                     }
                 },
-                { // Diário
+                { // Diário (Apenas os últimos 30 dias)
                     series: [
-                        { name: 'Saída', data: data.issues },
-                        { name: 'Recebimento', data: data.receipts }
+                        { name: 'Saída', data: data.issues.slice(daysLength - 30, daysLength) },
+                        { name: 'Recebimento', data: data.receipts.slice(daysLength - 30, daysLength) }
                     ],
                     chart: { height: 350, type: 'area' },
                     stroke: { curve: 'smooth' },
                     xaxis: {
                         type: 'category',
-                        categories: days,
+                        categories: days.slice(daysLength - 30, daysLength),
                         labels: {
                             format: 'dd/MM/yyyy',
                             style: {
