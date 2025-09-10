@@ -65,30 +65,47 @@ document.addEventListener('click', async function(e) {
             const response = await fetch(`http://127.0.0.1:8000/api/ver_produtos/${codigo}`);
             if (!response.ok) throw new Error("Erro ao carregar produto");
 
-            const produto = await response.json();
+            const p = await response.json();
 
             // Preenche os campos do popup
-            document.getElementById('cod').value = produto.codigo || "";
-            document.getElementById('nome_b').value = produto.nome_basico || "";
-            document.getElementById('nome_m').value = produto.nome_modificador || "";
-            document.getElementById('descricao').value = produto.descricao_tecnica || "";
-            document.getElementById('fabricante').value = produto.fabricante || "";
-            document.getElementById('observacao').value = produto.observacoes_adicional || "";
-            document.getElementById('unidade').value = produto.unidade || "";
-            document.getElementById('preco_v').value = produto.preco_de_venda || "";
-            document.getElementById('altura').value = produto.altura || "";
-            document.getElementById('largura').value = produto.largura || "";
-            document.getElementById('profundidade').value = produto.profundidade || "";
-            document.getElementById('peso').value = produto.peso || "";
-            document.getElementById('rua').value = produto.rua || "";
-            document.getElementById('coluna').value = produto.coluna || "";
-            document.getElementById('andar').value = produto.andar || "";
-            document.getElementById('preview-foto').src = produto.imagem ? `data:image/png;base64,${produto.imagem}` : "";
+            document.getElementById('cod').value = p.produto.codigo || "";
+            document.getElementById('nome_b').value = p.produto.nome_basico || "";
+            document.getElementById('nome_m').value = p.produto.nome_modificador || "";
+            document.getElementById('descricao').value = p.produto.descricao_tecnica || "";
+            document.getElementById('fabricante').value = p.produto.fabricante || "";
+            document.getElementById('observacao').value = p.produto.observacoes_adicional || "";
+            document.getElementById('unidade').value = p.produto.unidade || "";
+            document.getElementById('preco_v').value = p.produto.preco_de_venda || "";
+            document.getElementById('altura').value = p.produto.altura || "";
+            document.getElementById('largura').value = p.produto.largura || "";
+            document.getElementById('profundidade').value = p.produto.profundidade || "";
+            document.getElementById('peso').value = p.produto.peso || "";
+            document.getElementById('rua').value = p.produto.rua || "";
+            document.getElementById('coluna').value = p.produto.coluna || "";
+            document.getElementById('andar').value = p.produto.andar || "";
+            document.getElementById('preview-foto').src = p.produto.imagem ? `data:image/png;base64,${p.produto.imagem}` : "";
 
-            document.getElementById('fragilidade-sim').checked = produto.fragilidade == 1;
-            document.getElementById('fragilidade-nao').checked = produto.fragilidade != 1;
+            document.getElementById('fragilidade-sim').checked = p.produto.fragilidade == 1;
+            document.getElementById('fragilidade-nao').checked = p.produto.fragilidade != 1;
 
             popupEdicao.style.display = 'flex';
+
+            const selectCategorias = document.getElementById("categorias");
+            selectCategorias.innerHTML = ""; // limpa antes de preencher
+
+            // percorre todas as categorias e cria os <option>
+            p.todas_categorias.forEach(cat => {
+                const opt = document.createElement("option");
+                opt.value = cat.idcategoria;
+                opt.textContent = cat.categoria;
+
+                // deixa marcado se o produto já tiver essa categoria
+                if (p.categorias_produto.includes(cat.idcategoria)) {
+                    opt.selected = true;
+                }
+
+                selectCategorias.appendChild(opt);
+            });
 
         } catch (error) {
             console.error(error);
@@ -122,6 +139,14 @@ document.querySelector('.salvar_edicao').addEventListener('click', async functio
 
     const foto = document.getElementById('foto').files[0];
     if (foto) formData.append("imagem", foto);
+
+    const categoriasSelecionadas = Array.from(
+        document.getElementById('categorias').selectedOptions
+    ).map(opt => opt.value);
+
+    categoriasSelecionadas.forEach(catId => {
+        formData.append("categorias", catId);
+    });
 
     try {
         const response = await fetch(`http://127.0.0.1:8000/api/editar_produto/${codigo}`, {

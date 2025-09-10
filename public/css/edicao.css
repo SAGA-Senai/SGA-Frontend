@@ -791,7 +791,6 @@ td {
 #nome_b,
 #nome_m,
 #cod,
-#categoria,
 #descricao,
 #fabricante {
     width: 15.6vw;
@@ -800,13 +799,16 @@ td {
 .nome_b,
 .nome_m,
 .cod,
-.categoria,
 .descricao,
 .fabricante {
     /* ----------------------------------------- */
     width: 15.6vw;
     /* ----------------------------------------- */
     background-color: transparent;
+}
+
+#categorias{
+    height: 10vh;
 }
 
 .inputs1 {
