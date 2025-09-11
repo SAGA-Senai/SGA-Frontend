@@ -14,12 +14,12 @@
         <a href="adicionarUsuario.html" id="adicionarUsuario">Adicionar usuário</a>
         <img src="imagens/icon_sair.png" alt="icone de sair" id="logoutButton">
     </div>
-<section>
+<section class="main-content">
     <div class="container-grafico">
-    <div id="chart" ></div> 
-    <button id="Alternar" onclick="trocarGrafico(selectedIndex + 1)"><span>Alternar Gráfico</span></button>
-    
-</div>
+        <h2 id="titulo-grafico"></h2>
+        <div id="chart" ></div> 
+        <button id="Alternar" onclick="trocarGrafico(selectedIndex + 1)"><span>Alternar Gráfico</span></button>
+    </div>
 <div class="button-container">
     <div class="button green" id="botaoCadastro" onclick="redirecionarCadastro()">
         <img src="imagens/Vector (1).svg" alt="">
@@ -318,6 +318,11 @@
             ];
               
             const options = optionsType[selectedIndex];
+            
+            // Atualiza o título do gráfico
+            const titles = ['Gráfico de barras', 'Gráfico diário', 'Gráfico mensal'];
+            document.getElementById('titulo-grafico').innerText = titles[selectedIndex];
+
             if (chart) chart.destroy(); // Destroi o gráfico anterior
             chart = new ApexCharts(document.querySelector("#chart"), options);
             chart.render();
