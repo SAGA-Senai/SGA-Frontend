@@ -62,7 +62,7 @@ document.addEventListener('click', async function(e) {
         }
 
         try {
-            const response = await fetch(`http://127.0.0.1:8000/api/ver_produtos/${codigo}`);
+            const response = await fetch(`http://127.0.0.1:8000/api/ver_edicao/${codigo}`);
             if (!response.ok) throw new Error("Erro ao carregar produto");
 
             const p = await response.json();
@@ -110,6 +110,45 @@ document.addEventListener('click', async function(e) {
         } catch (error) {
             console.error(error);
             alert("Erro ao carregar produto.");
+            return;
+        }
+// -------- LOTES 
+        try {
+            const responseLotes = await fetch(`http://127.0.0.1:8000/api/ver_edicao/${codigo}/lotes`);
+            if (!responseLotes.ok) throw new Error("Erro ao carregar lotes");
+
+            const lotes = await responseLotes.json();
+
+            const selectLote = document.getElementById("select-lotes");
+            selectLote.innerHTML = '<option value="">Selecione um lote</option>';
+
+            lotes.forEach(loteRes => {
+                const opt = document.createElement("option");
+                opt.value = loteRes.lote;
+                opt.textContent = loteRes.lote;
+                selectLote.appendChild(opt);
+            });
+
+            selectLote.addEventListener("change", async (e) => {
+                const loteProd = e.target.value;
+                if (!loteProd) return;
+
+                const res = await fetch(`http://127.0.0.1:8000/api/ver_edicao/${codigo}/lotes/${loteProd}`);
+                if (!res.ok) {
+                    alert("Erro ao carregar lote");
+                    return;
+                }
+
+                const loteDataArray = await res.json();
+                const loteData = loteDataArray[0];
+
+                document.getElementById("data-lote").value = loteData.validade;
+                document.getElementById("fornecedor-lote").value = loteData.fornecedor;
+            });
+
+        } catch (error) {
+            console.error(error);
+            // alert("Erro ao carregar lotes.");
         }
     }
 });
@@ -148,18 +187,33 @@ document.querySelector('.salvar_edicao').addEventListener('click', async functio
         formData.append("categorias", catId);
     });
 
+    // lote
+    const lote = document.getElementById('select-lotes').value.trim();
+    if (!lote) return alert("Selecione um lote.");
+    const formDataLote = new FormData();
+
+    formDataLote.append("validade", document.getElementById('data-lote').value.trim());
+    formDataLote.append("fornecedor", document.getElementById('fornecedor-lote').value.trim());
+
     try {
         const response = await fetch(`http://127.0.0.1:8000/api/editar_produto/${codigo}`, {
             method: "PATCH",
             body: formData
         });
 
-        if (response.ok) {
+        const responseLote = await fetch(`http://127.0.0.1:8000/api/editar_lote/${codigo}/lotes/${lote}`, {
+            method: "PATCH",
+            body: formDataLote
+        });
+
+        if (response.ok && responseLote.ok) {
             alert("Produto atualizado com sucesso!");
             location.reload();
         } else {
-            const text = await response.text();
-            console.error("Erro:", response.status, text);
+            const erroProduto = !response.ok ? await response.text() : null;
+            const erroLote = !responseLote.ok ? await responseLote.text() : null;
+            console.error("Erro produto:", erroProduto);
+            console.error("Erro lote:", erroLote);
             alert("Erro ao atualizar produto.");
         }
     } catch (err) {
@@ -170,7 +224,7 @@ document.querySelector('.salvar_edicao').addEventListener('click', async functio
 
 // <!-- -------------------------------------Mostrar a Tabela----------------------------------------------------------- -->
 
-let API_URL = "http://127.0.0.1:8000/api/ver_produtos" 
+let API_URL = "http://127.0.0.1:8000/api/ver_edicao" 
 
 async function fetchProdutosCatalogo() {
     try {
