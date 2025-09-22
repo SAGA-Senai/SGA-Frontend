@@ -138,12 +138,25 @@
                     <div class="titulo-edicao">Lote</div>
                     <div class="inputs2">
                         <div>
-                            <select name="lotes" id="select-lotes"></select>
-                            <div class="date">Data de Validade:<input type="date" id="data-lote"></div>
-                            <div class="fornecedor">fornecedor:<input type="text" id="fornecedor-lote"></div>
+                            <select name="lotes" id="select-lotes">
+                                <option value="">Selecione um lote</option>
+                            </select>
+                            <div class="date">
+                                Data de Validade:
+                                <input type="date" id="data-lote" disabled>
+                            </div>
+                            <label>
+                                <input type="checkbox" id="checkbox-validade" disabled>
+                                Indeterminada
+                            </label>    
+                            <div class="fornecedor">
+                                Fornecedor:
+                                <input type="text" id="fornecedor-lote" disabled>
+                            </div>
                         </div>
                     </div>
                 </div>
+
             </div>
             <!-- /* ---------------------------------------------------------------------------------------- */ -->
             <div class="secao3">
