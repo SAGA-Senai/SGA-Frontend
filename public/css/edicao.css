@@ -199,7 +199,6 @@ select:focus {
 select {
     width: 10vw;
     margin-top: 4%;
-    margin-left: 10%;
     padding: 0.9vh 0.9vw;
     font-size: 14px;
     color: #fff;
@@ -656,8 +655,8 @@ td {
 }
 
 #preview-foto {
-    width: 200px;       /* largura fixa do espaço */
-    height: 200px;      /* altura fixa do espaço */
+    width: 20vw;       /* largura fixa do espaço */
+    height: 20vw;      /* altura fixa do espaço */
     border: 2px dashed #aaa; /* borda para indicar a área */
     border-radius: 8px;
     object-fit: contain; /* mantém proporção sem cortar */
@@ -666,7 +665,7 @@ td {
 
 .informacoesbasicas {
     /* ----------------------------------------- */
-    height: 30vh;
+    height: 50vh;
     width: 38.10vw;
     /* ----------------------------------------- */
     background-color: #D4D4D4;
@@ -710,8 +709,19 @@ td {
     background-color: transparent;
 }
 
+.categorias{
+    display: flex;
+    flex-direction: column;
+    
+}
+
 #categorias{
     height: 10vh;
+    width: 15.5vw;
+
+    & option{
+        color: #000;
+    }
 }
 
 .inputs1 {
@@ -729,7 +739,7 @@ td {
 
 /* ------------------------------------------------Seção2------------------------------------------------ */
 
-.secao2 {
+.secao1 {
     /* ----------------------------------------- */
     display: flex;
     justify-content: space-evenly;
@@ -739,7 +749,31 @@ td {
     /* border: 0.1vh solid black; */
 }
 
+.secao3 {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 30px;
+    padding: 0 30px 30px;
+    margin-top: 2.5vh;
+}
+
 .informacoesbasicas {
+    background: white;
+    border-radius: 15px;
+    padding: 25px;
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
+    border: 1px solid #e8e9ea;
+}
+
+.dadosfisicos{
+    background: white;
+    border-radius: 15px;
+    padding: 25px;
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
+    border: 1px solid #e8e9ea;
+}
+
+.localizacao{
     background: white;
     border-radius: 15px;
     padding: 25px;
@@ -796,6 +830,7 @@ td {
     grid-template-columns: 1fr 1fr;
     gap: 30px;
     padding: 0 30px 30px;
+    margin-top: 2.5vh;
 }
 
 .detalhesdoproduto, .lote {

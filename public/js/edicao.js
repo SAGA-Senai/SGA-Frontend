@@ -93,7 +93,7 @@ document.addEventListener('click', async function(e) {
         
 // -------- PRODUTO
         try {
-            const response = await fetch(`http://127.0.0.1:8000/api/ver_edicao/${codigo}`);
+            const response = await fetch(`http://127.0.0.1:8000/ver_edicao/${codigo}`);
             if (!response.ok) throw new Error("Erro ao carregar produto");
 
             const p = await response.json();
@@ -145,7 +145,7 @@ document.addEventListener('click', async function(e) {
         }
 // -------- LOTES 
         try {
-            const responseLotes = await fetch(`http://127.0.0.1:8000/api/ver_edicao/${codigo}/lotes`);
+            const responseLotes = await fetch(`http://127.0.0.1:8000/ver_edicao/${codigo}/lotes`);
             if (!responseLotes.ok) throw new Error("Erro ao carregar lotes");
 
             const lotes = await responseLotes.json();
@@ -167,7 +167,7 @@ document.addEventListener('click', async function(e) {
                     return;
                 }
 
-                const res = await fetch(`http://127.0.0.1:8000/api/ver_edicao/${codigo}/lotes/${loteProd}`);
+                const res = await fetch(`http://127.0.0.1:8000/ver_edicao/${codigo}/lotes/${loteProd}`);
                 if (!res.ok) {
                     alert("Erro ao carregar lote");
                     return;
@@ -233,7 +233,7 @@ document.querySelector('.salvar_edicao').addEventListener('click', async functio
     formData.append("categorias", categoriasSelecionadas.join(","));
 
     try {
-        const response = await fetch(`http://127.0.0.1:8000/api/editar_produto/${codigo}`, {
+        const response = await fetch(`http://127.0.0.1:8000/editar_produto/${codigo}`, {
             method: "PATCH",
             body: formData
         });
@@ -249,13 +249,11 @@ document.querySelector('.salvar_edicao').addEventListener('click', async functio
                 if (validade) {
                     formDataLote.append("validade", validade);
                 }
-            } else {
-                formDataLote.append("validade", "null"); // 👈 manda nulo
             }
 
             formDataLote.append("fornecedor", inputFornecedor.value.trim());
 
-            responseLote = await fetch(`http://127.0.0.1:8000/api/editar_lote/${codigo}/lotes/${lote}`, {
+            responseLote = await fetch(`http://127.0.0.1:8000/editar_lote/${codigo}/lotes/${lote}`, {
                 method: "PATCH",
                 body: formDataLote
             });
@@ -280,7 +278,7 @@ document.querySelector('.salvar_edicao').addEventListener('click', async functio
 
 // <!-- -------------------------------------Mostrar a Tabela----------------------------------------------------------- -->
 
-let API_URL = "http://127.0.0.1:8000/api/ver_edicao" 
+let API_URL = "http://127.0.0.1:8000/ver_edicao" 
 
 async function fetchProdutosCatalogo() {
     try {
@@ -398,7 +396,7 @@ function verificarSenha() {
         return;
     }
 
-    fetch(`http://127.0.0.1:8000/api/deletar_produto/${codigo_deletar}`, {
+    fetch(`http://127.0.0.1:8000/deletar_produto/${codigo_deletar}`, {
         method: 'DELETE'
     })
         .then(response => {
