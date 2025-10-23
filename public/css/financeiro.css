@@ -398,27 +398,21 @@ select:hover option:hover {
 }
 
 /* Estilos do formulário (inicialmente oculto) */
+#formDialog {
+    margin: auto;
+    width: fit-content;
+    border: none;
+    background: none;
+}
 #formContainer {
-    display: none;
-    display: none;
-    justify-self: center;
-    align-self: center;
     z-index: 999;
-    position: absolute;
     padding-bottom: 20px;
     font-family: 'poppins', sans-serif;
     border: 1px solid #ccc;
     border-radius: 5px;
     background-color: white;
-    align-self: center;
-    justify-self: center;
-    max-width: 450px;
-    width: 100%;
-    margin-top: -72vh;
-    z-index: 99999;
+    min-width: 450px;
     box-shadow: 5px 5px 10px rgba(0, 0, 0, 0.2);
-    /* margin-left: 38%; */
-
 }
 
 #formContainer #close-btn{
@@ -791,23 +785,6 @@ select:hover option:hover {
 
 .detail-item span {
     color: #888;
-}
-
-/* Fundo escurecido atrás do modal */
-#overlay {
-    display: none;
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background: rgba(0,0,0,1); /* Escurece */
-    z-index: 998;
-}
-
-/* Quando ativo, mostra */
-#overlay.active {
-    display: block;
 }
 
 /* Bloqueio de interação quando modal aberto */

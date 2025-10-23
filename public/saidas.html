@@ -96,54 +96,54 @@
   <div class="conteudo_pag">
     <button id="caixa-recebimento" onclick="toggleForm()">+</button>
 
+    <dialog id="formDialog">
+      <div id="formContainer">
+        <h2>Nova Saída</h2>
+        <button id="close-btn" class="close-btn" onclick="toggleForm()">&times;</button>
+        <form id="registrationForm">
 
+          <div class="input-container">
+            <input type="number" id="product_code" placeholder=" " required />
+            <label for="product_code">Código do Produto</label>
+          </div>
 
-    <div id="formContainer">
-      <h2>Nova Saída</h2>
-      <button id="close-btn" class="close-btn" onclick="toggleForm()">&times;</button>
-      <form id="registrationForm">
+          <div class="input-container">
+            <select id="product_font" required>
+              <option value="" disabled selected>Selecione o fornecedor:</option>
+              <!-- Opções dinâmicas adicionadas via JS -->
+            </select>
 
-        <div class="input-container">
-          <input type="number" id="product_code" placeholder=" " required />
-          <label for="product_code">Código do Produto</label>
-        </div>
+          </div>
 
-        <div class="input-container">
-          <select id="product_font" required>
-            <option value="" disabled selected>Selecione o fornecedor:</option>
-            <!-- Opções dinâmicas adicionadas via JS -->
-          </select>
-          
-        </div>
-
-        <div class="input-container">
-          <select id="numb_lote" required>
-            <option value="" disabled selected>Selecione o lote:</option>
-          </select>
-
-
-          
-          <p id="quantity_hint" class="hint">Estoque disponível: </p>
-
-        </div>
-
-        <div class="input-container">
-          <input type="number" id="quantity_received" min="1" placeholder=" " required />
-          <label for="quantity_received">Quantidade saída</label>
-        </div>
+          <div class="input-container">
+            <select id="numb_lote" required>
+              <option value="" disabled selected>Selecione o lote:</option>
+            </select>
 
 
 
-        <div class="input-container">
-          <input type="date" id="issue_date" placeholder=" " required />
-          <label for="issue_date">Data de saída</label>
-        </div>
+            <p id="quantity_hint" class="hint">Estoque disponível: </p>
 
-        <button type="submit" id="submitButton">
-          <h3>Cadastrar</h3>
-        </button>
-      </form>
-    </div>
+          </div>
+
+          <div class="input-container">
+            <input type="number" id="quantity_received" min="1" placeholder=" " required />
+            <label for="quantity_received">Quantidade saída</label>
+          </div>
+
+
+
+          <div class="input-container">
+            <input type="date" id="issue_date" placeholder=" " required />
+            <label for="issue_date">Data de saída</label>
+          </div>
+
+          <button type="submit" id="submitButton">
+            <h3>Cadastrar</h3>
+          </button>
+        </form>
+      </div>
+    </dialog>
   </div>
 
   <!--  SCRIPT QUE LIGA OS INPUT AO BACK-END  -->
@@ -240,8 +240,6 @@
             </div>
           </div>
         </div>
-
-        <div id="overlay"></div>
 
         <!-- acabou as mudanças -->
         <form id="formPesquisa">

@@ -1,32 +1,37 @@
 // Alternar exibição do formulário de recebimento
 /* TUDO CERTO */
-function toggleForm() {
-    const formContainer = document.getElementById("formContainer");
-    if (formContainer.style.display === "block") {
-      formContainer.style.display = "none";
-    } else {
-      formContainer.style.display = "block";
-    }
-  }
-  document.getElementById("formContainer").addEventListener("click", (event) => {
-    const formContent = document.getElementById("formContent");
-    if (formContent) {
-      if (!formContent.contains(event.target)) {
-        document.getElementById("formContainer").style.display = "none";
-      }
-    }
-  });
+// function toggleForm() {
+//     const formContainer = document.getElementById("formContainer");
+//     if (formContainer.style.display === "block") {
+//       formContainer.style.display = "none";
+//     } else {
+//       formContainer.style.display = "block";
+//     }
+//   }
+//   document.getElementById("formContainer").addEventListener("click", (event) => {
+//     const formContent = document.getElementById("formContent");
+//     if (formContent) {
+//       if (!formContent.contains(event.target)) {
+//         document.getElementById("formContainer").style.display = "none";
+//       }
+//     }
+//   });
   
-  function toggleSection(sectionId) {
-    var section = document.getElementById(sectionId);
-    if (section.style.display === "none" || section.style.display === "") {
-      section.style.display = "block";
-    } else {
-      section.style.display = "none";
-    }
-  }
-  
-  //---Inserir dados no BD
+//   function toggleSection(sectionId) {
+//     var section = document.getElementById(sectionId);
+//     if (section.style.display === "none" || section.style.display === "") {
+//       section.style.display = "block";
+//     } else {
+//       section.style.display = "none";
+//     }
+//   }
+
+// dialog do modal
+const dialogo = document.getElementById('formDialog');
+const botaoAbrir = document.getElementById('abrir');
+const botaoFechar = document.getElementById('fechar');
+
+//---Inserir dados no BD
   document.addEventListener("DOMContentLoaded", () => {
     const formContainer = document.getElementById("formContainer");
     const registrationForm = document.getElementById("registrationForm");
@@ -45,7 +50,7 @@ function toggleForm() {
       });
     }
   
-    // // Fetch lotes para preencher o select
+    // Fetch lotes para preencher o select
     // async function fetchLotes(fornecedorId) {
     //   const response = await fetch(`http://localhost:3000/lotes?fornecedor=${fornecedorId}`);
     //   const lotes = await response.json();
@@ -103,22 +108,23 @@ function toggleForm() {
       if (response.ok) {
         alert("Saída registrada com sucesso!");
         registrationForm.reset();
-        formContainer.style.display = "none";
-        fetchSaidas()
+        fetchSaidas();
+        toggleForm();
       } else {
         const error = await response.json();
         alert("Erro ao registrar saída: " + error.message);
       }
+      
 
       quantityHint.textContent = "Estoque disponível: "; // Reseta a dica de quantidade
     });
   });
   
-  function toggleForm() {
-    const formContainer = document.getElementById("formContainer");
-    formContainer.style.display =
-      formContainer.style.display === "block" ? "none" : "block";
-  }
+  // function toggleForm() {
+  //   const formContainer = document.getElementById("formContainer");
+  //   formContainer.style.display =
+  //     formContainer.style.display === "block" ? "none" : "block";
+  // }
   //----------------------------------------------------------------------------------------------------------------------
   document.addEventListener("DOMContentLoaded", () => {
     const productCodeInput = document.getElementById("product_code");
@@ -510,18 +516,26 @@ document.getElementById('textinho').addEventListener('click', () => {
 });
 
 function toggleForm() {
-    const formContainer = document.getElementById("formContainer");
-    const overlay = document.getElementById("overlay");
-
-    const isVisible = formContainer.style.display === "block";
-
-    if (!isVisible) {
-        formContainer.style.display = "block";
-        overlay.classList.add("active");
-        document.body.classList.add("modal-open"); // Bloqueia cliques
-    } else {
-        formContainer.style.display = "none";
-        overlay.classList.remove("active");
-        document.body.classList.remove("modal-open");
-    }
+  if (dialogo.open) {
+    dialogo.close();
+  } else {
+    dialogo.showModal();
+  }
 }
+
+// function toggleForm() {
+//     const formContainer = document.getElementById("formContainer");
+//     const overlay = document.getElementById("overlay");
+
+//     const isVisible = formContainer.style.display === "block";
+
+//     if (!isVisible) {
+//         formContainer.style.display = "block";
+//         overlay.classList.add("active");
+//         document.body.classList.add("modal-open"); // Bloqueia cliques
+//     } else {
+//         formContainer.style.display = "none";
+//         overlay.classList.remove("active");
+//         document.body.classList.remove("modal-open");
+//     }
+// }

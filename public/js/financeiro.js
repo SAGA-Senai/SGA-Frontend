@@ -1,73 +1,10 @@
 // Alternar exibição do formulário de recebimento
 /* TUDO CERTO */
-function toggleForm() {
-  const formContainer = document.getElementById("formContainer");
-  if (formContainer.style.display === "block") {
-    formContainer.style.display = "none";
-  } else {
-    formContainer.style.display = "block";
-  }
-}
-// O código abaixo está buscando um item com id inexistente
-// document.getElementById("formContainer").addEventListener("click", (event) => {
-//   const formContent = document.getElementById("formContent");
-//   if (!formContent.contains(event.target)) {
-//     document.getElementById("formContainer").style.display = "none";
-//   }
-// });
 
-function toggleSection(sectionId) {
-  var section = document.getElementById(sectionId);
-  if (section.style.display === "none" || section.style.display === "") {
-    section.style.display = "block";
-  } else {
-    section.style.display = "none";
-  }
-}
-
-//---Inserir dados no BD
-document
-  .getElementById("formContainer")
-  .addEventListener("submit", async function (e) {
-    e.preventDefault();
-    
-    const data = document.getElementById("receiving_date").value;
-    const quantidade = document.getElementById("quantity_received").value;
-    const codigo = document.getElementById("product_code").value;
-    const validade = document.getElementById("product_validade").value;
-    const lote = document.getElementById("numb_lote").value;
-    const fornecedor = document.getElementById("product_font").value;
-
-
-    const formContainer = document.getElementById("formContainer");
-
-    const response = await fetch("http://127.0.0.1:8000/financeiro", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        
-        Data: data,
-        Quantidade: quantidade,
-        Codigo: codigo,
-        Validade: validade,
-        Lote: lote,
-        Fornecedor: fornecedor,
-      }),
-    });
-
-    if (response.ok) {
-      alert("Recebimento adicionado com sucesso!");
-      document.getElementById("productForm").reset(); // Limpa o formulário
-      formContainer.style.display = "none";
-
-    } else {
-      alert("Erro ao adicionar recebimento!");
-    }
-  });
-
-
+// dialog do modal
+const dialogo = document.getElementById('formDialog');
+const botaoAbrir = document.getElementById('abrir');
+const botaoFechar = document.getElementById('fechar');
 
 //--------------------------------------------------------------Aparecer os recebimentos na tela
 // arrays que serão preenchidas com os dados recebidos
@@ -365,18 +302,9 @@ document.getElementById('textinho').addEventListener('click', () => {
 });
 
 function toggleForm() {
-    const formContainer = document.getElementById("formContainer");
-    const overlay = document.getElementById("overlay");
-
-    const isVisible = formContainer.style.display === "block";
-
-    if (!isVisible) {
-        formContainer.style.display = "block";
-        overlay.classList.add("active");
-        document.body.classList.add("modal-open"); // Bloqueia cliques
-    } else {
-        formContainer.style.display = "none";
-        overlay.classList.remove("active");
-        document.body.classList.remove("modal-open");
-    }
+  if (dialogo.open) {
+    dialogo.close();
+  } else {
+    dialogo.showModal();
+  }
 }

@@ -97,7 +97,8 @@
   <div class="conteudo_pag">
     <button id="caixa-recebimento" onclick="toggleForm()">+</button>
 
-    <div id="formContainer">
+    <dialog id="formDialog">
+      <div id="formContainer">
       <h2>Novo Recebimento</h2>
       <button id="close-btn" class="close-btn" onclick="toggleForm()">&times;</button>
       <form id="registrationForm">
@@ -142,6 +143,7 @@
         </button>
       </form>
     </div>
+    </dialog>
   </div>
 
   <!--  SCRIPT QUE LIGA OS INPUT AO BACK-END  -->
@@ -180,7 +182,6 @@
 
         if (response.ok) {
           alert('recebimento adicionado com sucesso!');
-          formContainer.style.display = "none";
         } else {
           const errorMessage = await response.text();
           alert('Erro: ' + errorMessage);
@@ -188,6 +189,7 @@
       } catch (error) {
         alert('Erro ao adicionar recebimento ' + error.message);
       }
+      toggleForm();
       fetchData(); // recarrega os dados e monta a tabela com o dado adicionado
     });
 
@@ -252,8 +254,6 @@
             </div>
           </div>
         </div>
-
-        <div id="overlay"></div>
 
         <!-- acabou as mudanças -->
         <form id="formPesquisa">
