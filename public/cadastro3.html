@@ -90,6 +90,12 @@
               <div class="caixaTexto">
                 <input id="andar" type="text" placeholder="Andar" required />
               </div>
+              <div class="categorias">
+                Categoria:
+                <select class="input" id="categorias" multiple>
+                  
+                </select>
+              </div>
             </div>
             <div class="setas">
               <button type="button" id="esquerda" onclick="location.href='cadastro2.html';">
@@ -109,16 +115,21 @@
   </section>
 
   <script src="js/navbar.js"></script>
+  <script src="js/cadastro3.js"></script>
   <script>
     document.getElementById("form-etapa3").addEventListener("submit", function (e) {
       e.preventDefault();
 
       const etapaAnterior = JSON.parse(localStorage.getItem("cadastro_produto")) || {};
 
+      const select = document.getElementById("categorias");
+      const categoriasSelecionadas = Array.from(select.selectedOptions).map(opt => opt.value);
+
       const etapa3 = {
         rua: parseInt(document.getElementById("rua").value),
         coluna: parseInt(document.getElementById("coluna").value),
-        andar: parseInt(document.getElementById("andar").value)
+        andar: parseInt(document.getElementById("andar").value),
+        categorias: categoriasSelecionadas
       };
 
       const dadosAtualizados = { ...etapaAnterior, ...etapa3 };

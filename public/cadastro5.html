@@ -141,6 +141,7 @@
       formData.append("peso", parseFloat(dados.peso));
       formData.append("observacoes_adicional", observacao);
       formData.append("inserido_por", localStorage.getItem("usuario_email"));
+      formData.append("categorias", dados.categorias.join(","));
 
       if (imagemInput.files[0]) {
         formData.append("imagem", imagemInput.files[0]);
