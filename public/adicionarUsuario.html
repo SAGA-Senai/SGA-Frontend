@@ -69,6 +69,9 @@
     
     <a id="sair" href="telaInicial-Professor.html">Sair</a>
 
+    <script src="js/config.js"></script>
+
+
     <!-- Script para "esconder" o input data -->
     <script>
         function toggleDateInput(textInput) {
@@ -94,31 +97,53 @@
 
 
 
-    <script>
-        document.getElementById('usuarioForm').addEventListener('submit', async (event) => {
-            event.preventDefault();
+   <script>
+document.addEventListener("DOMContentLoaded", function () {
+    const form = document.getElementById("usuarioForm");
 
-            const usuario = {
-                email: document.getElementById('email').value,
-                nome: document.getElementById('nome').value,
-                senha: document.getElementById('senha').value,
-                dataNasc: document.getElementById('dataNasc').value,
-                dataEntrada: document.getElementById('dataEntrada').value
-            };
+    form.addEventListener("submit", async function (event) {
+        event.preventDefault();
 
-            try {
-                const response = await fetch('http://localhost:3000/adicionar-usuario', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify(usuario)
-                });
-                const message = await response.text();
-                alert(message);
-            } catch (error) {
-                alert('Erro ao enviar dados: ' + error.message);
+        const token = localStorage.getItem("access_token");
+        if (!token) {
+            alert("Você precisa estar logado para cadastrar usuários.");
+            window.location.href = "index.html";
+            return;
+        }
+
+        const usuarioData = {
+            nome: document.getElementById("nome").value,
+            email: document.getElementById("email").value,
+            senha: document.getElementById("senha").value,
+            datanasc: document.getElementById("dataNasc").value,
+            dataentrada: document.getElementById("dataEntrada").value
+        };
+
+        try {
+            const response = await fetch(`${API_BASE_URL}/usuarios`, {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                    "Authorization": `Bearer ${token}`
+                },
+                body: JSON.stringify(usuarioData)
+            });
+
+            if (!response.ok) {
+                const errorData = await response.json();
+                throw new Error(errorData.detail || "Erro ao cadastrar usuário.");
             }
-        });
-    </script>
+
+            alert("✅ Usuário cadastrado com sucesso!");
+            form.reset();
+
+        } catch (error) {
+            alert("❌ Erro: " + error.message);
+        }
+    });
+});
+</script>
+
 </body>
 
 </html>

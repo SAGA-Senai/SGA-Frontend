@@ -7,8 +7,8 @@ const bodyParser = require('body-parser');
 const path = require('path');
 
 const app = express();
-const cadastroRoutes = require('./routes/cadastro'); // Importando as rotas de cadastro
-const API_URL = "http://127.0.0.1:8000"
+const cadastroRoutes = require('./routes/cadastro');
+const API_URL = "http://localhost:8000"
 
 // Middlewares globais
 app.use(cors());
@@ -300,7 +300,7 @@ app.get('/estoque-real', async (req, res) => {
 
 
         let query = `
-	        SELECT 
+                SELECT 
                 CODIGO,
                 NOME_BASICO,
                 QUANTIDADE,
@@ -327,7 +327,7 @@ app.post('/estoque-real', async (req, res) => {
         const { codigo } = req.body;  
 
         let query = `
-	        SELECT 
+                SELECT 
                 CODIGO,
                 NOME_BASICO,
                 QUANTIDADE,
@@ -1253,4 +1253,9 @@ app.post('/editar-produto', async (req, res) => {
         console.error('Erro ao atualizar o produto:', error.message);
         res.status(500).send('Erro ao atualizar o produto.');
     }
+});
+
+const PORT = process.env.PORT || 5000;
+app.listen(PORT, '0.0.0.0', () => {
+    console.log(`✅ Frontend rodando em http://0.0.0.0:${PORT}`);
 });
