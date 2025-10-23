@@ -12,6 +12,7 @@
     <link
         href="https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap"
         rel="stylesheet">
+    <script src="js/config.js"></script>
 </head>
 
 <body>
@@ -48,6 +49,7 @@
     </div>
 
         <script>
+            
         document.getElementById('loginForm').addEventListener('submit', async (event) => {
             event.preventDefault();
 
@@ -55,7 +57,7 @@
             const senha = document.getElementById('senha').value;
 
             try {
-            const response = await fetch('http://localhost:8000/login', {
+            const response = await fetch(`${API_BASE_URL}/login`, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ email, senha }),
@@ -63,11 +65,12 @@
 
             const data = await response.json();
 
-            if (response.ok && data.success) {
-                localStorage.setItem('usuario_email', data.usuario.email);
-                localStorage.setItem('usuario_tipo', data.usuario.tipo);
+            if (response.ok && data.access_token) {
+                localStorage.setItem('access_token', data.access_token);
+                localStorage.setItem('usuario_email', data.email);
+                localStorage.setItem('usuario_tipo', data.tipo_usuario);
 
-                if (data.usuario.tipo === 'professor') {
+                if (data.tipo_usuario === 'professor') {
                     window.location.href = "telaInicial-Professor.html";
                 } else {
                     window.location.href = "telaInicial.html";

@@ -189,11 +189,11 @@
     PESO
 )
 VALUES
-(1, 'Produto A', 'Modificador X', 'Descrição Técnica 1', 'Fabricante 1', 'Observação 1', NULL, 'Unidade A', 10.50, 1, 'Usuario1', 1, 1, 1, 10, 20, 15, 10.5),
-(2, 'Produto B', 'Modificador Y', 'Descrição Técnica 2', 'Fabricante 2', 'Observação 2', NULL, 'Unidade B', 20.99, 0, 'Usuario2', 2, 2, 2, 15, 25, 10, 2.4),
-(3, 'Produto C', 'Modificador Z', 'Descrição Técnica 3', 'Fabricante 3', 'Observação 3', NULL, 'Unidade C', 30.00, 1, 'Usuario3', 3, 3, 3, 20, 30, 20, 0.3),
-(4, 'Produto D', 'Modificador W', 'Descrição Técnica 4', 'Fabricante 4', 'Observação 4', NULL, 'Unidade D', 40.50, 1, 'Usuario4', 4, 4, 2, 25, 35, 25, 0.8),
-(5, 'Produto E', 'Modificador V', 'Descrição Técnica 5', 'Fabricante 5', 'Observação 5', NULL, 'Unidade E', 50.99, 0, 'Usuario5', 1, 1, 5, 30, 40, 30, 20);
+(1, 'Produto A', 'Modificador X', 'Descriï¿½ï¿½o Tï¿½cnica 1', 'Fabricante 1', 'Observaï¿½ï¿½o 1', NULL, 'Unidade A', 10.50, 1, 'Usuario1', 1, 1, 1, 10, 20, 15, 10.5),
+(2, 'Produto B', 'Modificador Y', 'Descriï¿½ï¿½o Tï¿½cnica 2', 'Fabricante 2', 'Observaï¿½ï¿½o 2', NULL, 'Unidade B', 20.99, 0, 'Usuario2', 2, 2, 2, 15, 25, 10, 2.4),
+(3, 'Produto C', 'Modificador Z', 'Descriï¿½ï¿½o Tï¿½cnica 3', 'Fabricante 3', 'Observaï¿½ï¿½o 3', NULL, 'Unidade C', 30.00, 1, 'Usuario3', 3, 3, 3, 20, 30, 20, 0.3),
+(4, 'Produto D', 'Modificador W', 'Descriï¿½ï¿½o Tï¿½cnica 4', 'Fabricante 4', 'Observaï¿½ï¿½o 4', NULL, 'Unidade D', 40.50, 1, 'Usuario4', 4, 4, 2, 25, 35, 25, 0.8),
+(5, 'Produto E', 'Modificador V', 'Descriï¿½ï¿½o Tï¿½cnica 5', 'Fabricante 5', 'Observaï¿½ï¿½o 5', NULL, 'Unidade E', 50.99, 0, 'Usuario5', 1, 1, 5, 30, 40, 30, 20);
 
 GO
 
@@ -262,4 +262,8 @@ CREATE TABLE FactSaidas (
         LOTE Nvarchar(30) not null,
         CODIGO BIGINT NOT NULL,
         FORNECEDOR VARCHAR(255)
-    );
+ï¿½ï¿½ï¿½ï¿½);
+
+ALTER TABLE dimusuario ADD COLUMN IF NOT EXISTS inserido_por VARCHAR(255);
+
+ALTER TABLE dimprofessor ALTER COLUMN sn ADD GENERATED ALWAYS AS IDENTITY;

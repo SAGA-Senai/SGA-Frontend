@@ -43,6 +43,35 @@ document.getElementById('foto').addEventListener('change', function (event) {
     }
 });
 
+// FORM DE EDIÇÃO
+
+const checkboxValidade = document.getElementById("checkbox-validade");
+const inputValidade = document.getElementById("data-lote");
+const inputFornecedor = document.getElementById("fornecedor-lote");
+const selectLote = document.getElementById("select-lotes");
+
+// --- Habilitação/Desabilitação por checkbox ---
+checkboxValidade.addEventListener("change", () => {
+    if (checkboxValidade.checked) {
+        inputValidade.disabled = true;
+        inputValidade.value = ""; // limpa a data
+    } else {
+        inputValidade.disabled = false;
+    }
+});
+
+// --- Limpar campos de lote ---
+function limparCamposLote() {
+    selectLote.value = "";
+    inputValidade.value = "";
+    inputFornecedor.value = "";
+    checkboxValidade.checked = false;
+
+    inputValidade.disabled = true;
+    inputFornecedor.disabled = true;
+    checkboxValidade.disabled = true;
+}
+
 document.addEventListener('click', async function(e) {
     const popupEdicao = document.querySelector('.popup-edicao');
     const content = document.querySelector('.popup-edicao .conteudo');
@@ -50,6 +79,7 @@ document.addEventListener('click', async function(e) {
     // Fecha o popup se clicar fora
     if (popupEdicao && !content.contains(e.target)) {
         popupEdicao.style.display = 'none';
+        limparCamposLote();
     }
 
     // Clique no lápis
@@ -60,39 +90,112 @@ document.addEventListener('click', async function(e) {
             alert("Código do produto não encontrado.");
             return;
         }
-
+        
+// -------- PRODUTO
         try {
-            const response = await fetch(`http://127.0.0.1:8000/api/ver_produtos/${codigo}`);
+            const response = await fetch(`http://127.0.0.1:8000/ver_edicao/${codigo}`);
             if (!response.ok) throw new Error("Erro ao carregar produto");
 
-            const produto = await response.json();
+            const p = await response.json();
 
             // Preenche os campos do popup
-            document.getElementById('cod').value = produto.codigo || "";
-            document.getElementById('nome_b').value = produto.nome_basico || "";
-            document.getElementById('nome_m').value = produto.nome_modificador || "";
-            document.getElementById('descricao').value = produto.descricao_tecnica || "";
-            document.getElementById('fabricante').value = produto.fabricante || "";
-            document.getElementById('observacao').value = produto.observacoes_adicional || "";
-            document.getElementById('unidade').value = produto.unidade || "";
-            document.getElementById('preco_v').value = produto.preco_de_venda || "";
-            document.getElementById('altura').value = produto.altura || "";
-            document.getElementById('largura').value = produto.largura || "";
-            document.getElementById('profundidade').value = produto.profundidade || "";
-            document.getElementById('peso').value = produto.peso || "";
-            document.getElementById('rua').value = produto.rua || "";
-            document.getElementById('coluna').value = produto.coluna || "";
-            document.getElementById('andar').value = produto.andar || "";
-            document.getElementById('preview-foto').src = produto.imagem ? `data:image/png;base64,${produto.imagem}` : "";
+            document.getElementById('cod').value = p.produto.codigo || "";
+            document.getElementById('nome_b').value = p.produto.nome_basico || "";
+            document.getElementById('nome_m').value = p.produto.nome_modificador || "";
+            document.getElementById('descricao').value = p.produto.descricao_tecnica || "";
+            document.getElementById('fabricante').value = p.produto.fabricante || "";
+            document.getElementById('observacao').value = p.produto.observacoes_adicional || "";
+            document.getElementById('unidade').value = p.produto.unidade || "";
+            document.getElementById('preco_v').value = p.produto.preco_de_venda || "";
+            document.getElementById('altura').value = p.produto.altura || "";
+            document.getElementById('largura').value = p.produto.largura || "";
+            document.getElementById('profundidade').value = p.produto.profundidade || "";
+            document.getElementById('peso').value = p.produto.peso || "";
+            document.getElementById('rua').value = p.produto.rua || "";
+            document.getElementById('coluna').value = p.produto.coluna || "";
+            document.getElementById('andar').value = p.produto.andar || "";
+            document.getElementById('preview-foto').src = p.produto.imagem ? `data:image/png;base64,${p.produto.imagem}` : "";
 
-            document.getElementById('fragilidade-sim').checked = produto.fragilidade == 1;
-            document.getElementById('fragilidade-nao').checked = produto.fragilidade != 1;
+            document.getElementById('fragilidade-sim').checked = p.produto.fragilidade == 1;
+            document.getElementById('fragilidade-nao').checked = p.produto.fragilidade != 1;
 
             popupEdicao.style.display = 'flex';
+
+            const selectCategorias = document.getElementById("categorias");
+            selectCategorias.innerHTML = ""; // limpa antes de preencher
+
+            // percorre todas as categorias e cria os <option>
+            p.todas_categorias.forEach(cat => {
+                const opt = document.createElement("option");
+                opt.value = cat.idcategoria;
+                opt.textContent = cat.categoria;
+
+                // deixa marcado se o produto já tiver essa categoria
+                if (p.categorias_produto.includes(cat.idcategoria)) {
+                    opt.selected = true;
+                }
+
+                selectCategorias.appendChild(opt);
+            });
 
         } catch (error) {
             console.error(error);
             alert("Erro ao carregar produto.");
+            return;
+        }
+// -------- LOTES 
+        try {
+            const responseLotes = await fetch(`http://127.0.0.1:8000/ver_edicao/${codigo}/lotes`);
+            if (!responseLotes.ok) throw new Error("Erro ao carregar lotes");
+
+            const lotes = await responseLotes.json();
+
+            selectLote.innerHTML = '<option value="">Selecione um lote</option>';
+
+            lotes.forEach(loteRes => {
+                const opt = document.createElement("option");
+                opt.value = loteRes.lote;
+                opt.textContent = loteRes.lote;
+                selectLote.appendChild(opt);
+            });
+
+            // Evento de seleção de lote
+            selectLote.onchange = async (e) => {
+                const loteProd = e.target.value;
+                if (!loteProd) {
+                    limparCamposLote();
+                    return;
+                }
+
+                const res = await fetch(`http://127.0.0.1:8000/ver_edicao/${codigo}/lotes/${loteProd}`);
+                if (!res.ok) {
+                    alert("Erro ao carregar lote");
+                    return;
+                }
+
+                const loteDataArray = await res.json();
+                const loteData = loteDataArray[0];
+
+                // Habilita os inputs
+                inputValidade.disabled = false;
+                inputFornecedor.disabled = false;
+                checkboxValidade.disabled = false;
+
+                if (loteData.validade === null) {
+                    checkboxValidade.checked = true;
+                    inputValidade.disabled = true;
+                    inputValidade.value = "";
+                } else {
+                    checkboxValidade.checked = false;
+                    inputValidade.disabled = false;
+                    inputValidade.value = loteData.validade;
+                }
+
+                inputFornecedor.value = loteData.fornecedor || "";
+            };
+
+        } catch (error) {
+            console.error(error);
         }
     }
 });
@@ -123,20 +226,50 @@ document.querySelector('.salvar_edicao').addEventListener('click', async functio
     const foto = document.getElementById('foto').files[0];
     if (foto) formData.append("imagem", foto);
 
+    const categoriasSelecionadas = Array.from(
+        document.getElementById('categorias').selectedOptions
+    ).map(opt => opt.value);
+
+    formData.append("categorias", categoriasSelecionadas.join(","));
+
     try {
-        const response = await fetch(`http://127.0.0.1:8000/api/editar_produto/${codigo}`, {
+        const response = await fetch(`http://127.0.0.1:8000/editar_produto/${codigo}`, {
             method: "PATCH",
             body: formData
         });
 
-        if (response.ok) {
+        const lote = selectLote.value.trim();
+        let responseLote = { ok: true };
+
+        if (lote) {
+            const formDataLote = new FormData();
+
+            if (!checkboxValidade.checked) {
+                const validade = inputValidade.value.trim();
+                if (validade) {
+                    formDataLote.append("validade", validade);
+                }
+            }
+
+            formDataLote.append("fornecedor", inputFornecedor.value.trim());
+
+            responseLote = await fetch(`http://127.0.0.1:8000/editar_lote/${codigo}/lotes/${lote}`, {
+                method: "PATCH",
+                body: formDataLote
+            });
+        }
+
+        if (response.ok && responseLote.ok) {
             alert("Produto atualizado com sucesso!");
             location.reload();
         } else {
-            const text = await response.text();
-            console.error("Erro:", response.status, text);
-            alert("Erro ao atualizar produto.");
+            const erroProduto = !response.ok ? await response.text() : null;
+            const erroLote = !responseLote.ok ? await response.text() : null;
+            console.error("Erro produto:", erroProduto);
+            console.error("Erro lote:", erroLote);
+            alert("Erro ao atualizar produto ou lote.");
         }
+
     } catch (err) {
         console.error(err);
         alert("Erro ao enviar dados.");
@@ -145,7 +278,7 @@ document.querySelector('.salvar_edicao').addEventListener('click', async functio
 
 // <!-- -------------------------------------Mostrar a Tabela----------------------------------------------------------- -->
 
-let API_URL = "http://127.0.0.1:8000/api/ver_produtos" 
+let API_URL = "http://127.0.0.1:8000/ver_edicao" 
 
 async function fetchProdutosCatalogo() {
     try {
@@ -157,7 +290,7 @@ async function fetchProdutosCatalogo() {
 
         produtos = await response.json();
 
-        preencherSelectFabricantes(produtos)
+        preencherSelects(produtos)
         montarTabela(produtos)
     } catch (error) {
         alert('Erro ao buscar produtos: ' + error.message);
@@ -199,18 +332,6 @@ function montarTabela(lista = produtos){
                     <td>${p.nome_modificador}</td>
                     <td>${p.descricao_tecnica}</td>
                     <td>${p.fabricante}</td>
-                    <td class="none">${p.observacoes_adicional}</td>
-                    <td class="none">${p.unidade}</td>
-                    <td class="none">${p.preco_de_venda}</td>
-                    <td class="none">${p.fragilidade}</td>
-                    <td class="none">${p.altura}</td>
-                    <td class="none">${p.largura}</td>
-                    <td class="none">${p.profundidade}</td>
-                    <td class="none">${p.peso}</td>
-                    <td class="none">${p.rua}</td>
-                    <td class="none">${p.coluna}</td>
-                    <td class="none">${p.andar}</td>
-                    <td class="none">${p.imagem}</td>
                     <td class="lixeira">
                         <img src="imagens/Lixeira(Normal).svg" alt="Lixeira" class="imagemlixeira" 
                             onmouseover="this.src='imagens/Lixeira(Modificado).svg';" 
@@ -231,17 +352,31 @@ function montarTabela(lista = produtos){
     });
 }
 
-function preencherSelectFabricantes(lista) {
+function preencherSelects(lista) {
     const selectFabricante = document.getElementById("fabricante-filtro");
     selectFabricante.innerHTML = '<option value="">Todos</option>';
 
     const fabricantes = [...new Set(lista.map(p => p.fabricante))].filter(f => f);
 
     fabricantes.forEach(f => {
-        const opt = document.createElement("option");
-        opt.value = f;
-        opt.textContent = f;
-        selectFabricante.appendChild(opt);
+        const optFabricante = document.createElement("option");
+        optFabricante.value = f;
+        optFabricante.textContent = f;
+        selectFabricante.appendChild(optFabricante);
+    });
+
+    const selectCategoria = document.getElementById("categoria");
+    selectCategoria.innerHTML = '<option value="">Todas</option>';
+
+    const categorias = [...new Set(lista.flatMap(p => 
+        p.categorias ? p.categorias.split(", ") : []
+    ))].filter(c => c);
+
+    categorias.forEach(f => {
+        const optCategoria = document.createElement("option");
+        optCategoria.value = f;
+        optCategoria.textContent = f;
+        selectCategoria.appendChild(optCategoria);
     });
 }
 
@@ -261,7 +396,7 @@ function verificarSenha() {
         return;
     }
 
-    fetch(`http://127.0.0.1:8000/api/deletar_produto/${codigo_deletar}`, {
+    fetch(`http://127.0.0.1:8000/deletar_produto/${codigo_deletar}`, {
         method: 'DELETE'
     })
         .then(response => {
@@ -302,6 +437,11 @@ document.getElementById('fabricante-filtro').addEventListener('change', e => {
   montarTabela(produtos)
 });
 
+document.getElementById('categoria').addEventListener('change', e => {
+  tabelaOpts.categoria = e.target.value;
+  montarTabela();
+});
+
 //---------------------LIMPAR FILTRO
 
 function limparFiltros() {
@@ -309,7 +449,7 @@ function limparFiltros() {
   tabelaOpts.fabricante = '';
   tabelaOpts.ordenacao = '';
   document.getElementById('categoria').value = '';
-  document.getElementById('fabricante').value = '';
+  document.getElementById('fabricante-filtro').value = '';
   document.getElementById('ordenacao').value = '';
   montarTabela();
 }

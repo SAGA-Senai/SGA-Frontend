@@ -49,24 +49,38 @@ async function fetchProdutosCatalogo() {
         produtos = await response.json();
         console.log(produtos);
 
-        preencherSelectFabricantes(produtos)
+        preencherSelects(produtos)
         montarTabela();
     } catch (error) {
         alert('Erro ao buscar usuários: ' + error.message);
     }
 }
 
-function preencherSelectFabricantes(lista) {
+function preencherSelects(lista) {
     const selectFabricante = document.getElementById("fabricante");
     selectFabricante.innerHTML = '<option value="">Todos</option>';
 
     const fabricantes = [...new Set(lista.map(p => p.fabricante))].filter(f => f);
 
     fabricantes.forEach(f => {
-        const opt = document.createElement("option");
-        opt.value = f;
-        opt.textContent = f;
-        selectFabricante.appendChild(opt);
+        const optFabricante = document.createElement("option");
+        optFabricante.value = f;
+        optFabricante.textContent = f;
+        selectFabricante.appendChild(optFabricante);
+    });
+
+    const selectCategoria = document.getElementById("categoria");
+    selectCategoria.innerHTML = '<option value="">Todas</option>';
+
+    const categorias = [...new Set(lista.flatMap(p => 
+        p.categorias ? p.categorias.split(", ") : []
+    ))].filter(c => c);
+
+    categorias.forEach(f => {
+        const optCategoria = document.createElement("option");
+        optCategoria.value = f;
+        optCategoria.textContent = f;
+        selectCategoria.appendChild(optCategoria);
     });
 }
 
@@ -104,7 +118,7 @@ function montarTabela(lista = produtos){
         <td>${p.nome_basico}</td>
         <td>${p.descricao_tecnica}</td>
         <td>${p.quantidade}</td>
-        <td>${p.categoria}</td>
+        <td>${p.categorias}</td>
         <td>${p.fabricante}</td>
         <td class="colunaAbrirDetalhes" id="${p.codigo}"><button onclick=abrirLinha() class="btnAbrirLinha" id="${p.codigo}">+</button></td>
         </tr>
@@ -192,6 +206,11 @@ document.getElementById('ordenacao').addEventListener('change', e => {
 
 document.getElementById('fabricante').addEventListener('change', e => {
   tabelaOpts.fabricante = e.target.value;
+  montarTabela();
+});
+
+document.getElementById('categoria').addEventListener('change', e => {
+  tabelaOpts.categoria = e.target.value;
   montarTabela();
 });
 

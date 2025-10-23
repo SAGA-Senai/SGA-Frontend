@@ -105,7 +105,9 @@
                     <div class="inputs1">
                         <div class="nome_b">Nome Básico:<input type="text" class="input" id="nome_b"></div>
                         <div class="nome_m">Nome Modificador:<input type="text" class="input" id="nome_m"></div>
-                        <div class="categoria">Categoria:<input type="text" class="input" id="categoria"></div>
+                        <div class="categorias">Categoria:<select class="input" id="categorias" multiple>
+                            
+                        </select></div>
                         <div class="cod">Cód. Barras:<input type="number" class="input" id="cod" readonly></div>
                         <div class="descricao">Descrição Técnica:<input type="text" class="input" id="descricao"></div>
                         <div class="fabricante">Fabricante:<input type="text" class="input" id="fabricante"></div>
@@ -135,9 +137,26 @@
                 <div class="lote">
                     <div class="titulo-edicao">Lote</div>
                     <div class="inputs2">
-                        <div></div>
+                        <div>
+                            <select name="lotes" id="select-lotes">
+                                <option value="">Selecione um lote</option>
+                            </select>
+                            <div class="date">
+                                Data de Validade:
+                                <input type="date" id="data-lote" disabled>
+                            </div>
+                            <label>
+                                <input type="checkbox" id="checkbox-validade" disabled>
+                                Indeterminada
+                            </label>    
+                            <div class="fornecedor">
+                                Fornecedor:
+                                <input type="text" id="fornecedor-lote" disabled>
+                            </div>
+                        </div>
                     </div>
                 </div>
+
             </div>
             <!-- /* ---------------------------------------------------------------------------------------- */ -->
             <div class="secao3">
@@ -159,9 +178,9 @@
                         <div class="andar">Andar:<input type="number" class="input" id="andar"></div>
                     </div>
                 </div>
-                <button class="salvar_edicao">Salvar</button>
+                
             </div>
-
+            <button class="salvar_edicao">Salvar</button>
         </div>
     </div>
 
@@ -242,17 +261,6 @@
                         <th>Nome Modificado</th>
                         <th>Descrição Tecnica</th>
                         <th>Fabricante</th>
-                        <th class="none">Observação Adicional</th>
-                        <th class="none">Unidade</th>
-                        <th class="none">Preço de Venda</th>
-                        <th class="none">Fragilidade</th>
-                        <th class="none">Altura</th>
-                        <th class="none">Largura</th>
-                        <th class="none">Profundidade</th>
-                        <th class="none">Peso</th>
-                        <th class="none">Rua</th>
-                        <th class="none">Coluna</th>
-                        <th class="none">Andar</th>
                     </tr>
                 </thead>
                 <tbody>
