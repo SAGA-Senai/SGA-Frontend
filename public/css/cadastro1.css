@@ -29,6 +29,10 @@ body {
     }
 }
 
+button{
+    cursor: pointer;
+}
+
 .cadastrar{
     background-color: #000;
 }

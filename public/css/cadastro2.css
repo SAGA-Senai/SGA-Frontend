@@ -13,6 +13,10 @@ body {
     height: 100vh;
 }
 
+button{
+    cursor: pointer;
+}
+
 /* CABEÇALHO */
 .texto-nav{
     color: #0B6300;

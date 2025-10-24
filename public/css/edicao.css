@@ -196,36 +196,96 @@ select:focus {
     display: block;
 }
 
-select {
-    width: 10vw;
-    margin-top: 4%;
-    padding: 0.9vh 0.9vw;
-    font-size: 14px;
-    color: #fff;
-    background-color: #DA0000;
-    border-color: transparent;
-    border-radius: 0.5vh;
-    appearance: none;
+#categorias{
+    margin-top: 1vh;
+    width: 100%;
+    padding: 2.3%;
+    border: 0.1vh solid #ccc;
+    border-radius: 0.4vh;
+    box-sizing: border-box;
+    font-family: "Inter", serif;
+    font-size: 1rem;
+    box-shadow: 0.4vh 0.4vh 0.4vh #c4c4c4;
     cursor: pointer;
-    transition: all 0.3s ease;
+
+    & option{
+        color: #000;
+    }
 }
 
-select:focus {
+#categorias:focus{
     outline: none;
     border-color: #DA0000;
     box-shadow: 0 0 0 3px rgba(218, 0, 0, 0.2);
 }
 
-option {
-    font-size: 14px;
-    padding: 1vh;
-    color: #ffffff;
+/* ---------- Seção de Lote Ajustada ---------- */
+.lote {
+    background: white;
+    border-radius: 15px;
+    padding: 25px;
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
+    border: 1px solid #e8e9ea;
 }
 
-select:hover {
-    border-color: #DA0000;
-    background-color: #B50000;
+.lote .titulo-edicao {
+    background: linear-gradient(135deg, #FF0000 0%, #CC0000 100%);
+    color: white;
+    font-size: clamp(18px, 2vw, 22px);
+    font-weight: 600;
+    text-align: center;
+    border-radius: 12px;
+    margin-bottom: 20px;
+    box-shadow: 0 4px 12px rgba(255, 0, 0, 0.25);
 }
+
+.lote .inputs2 {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+.lote select,
+.lote input[type="date"],
+.lote input[type="text"] {
+    height: 45px;
+    padding: 0 15px;
+    background-color: #f8f9fa;
+    border: 2px solid #e0e0e0;
+    border-radius: 10px;
+    color: #333;
+    font-size: 14px;
+    transition: all 0.3s ease;
+    font-family: "Inter", sans-serif;
+    width: 100%;
+}
+
+.lote select:focus,
+.lote input[type="date"]:focus,
+.lote input[type="text"]:focus {
+    outline: none;
+    border-color: #DA0000;
+    background-color: white;
+    box-shadow: 0 0 0 3px rgba(218, 0, 0, 0.1);
+    transform: translateY(-2px);
+}
+
+.lote label {
+    font-weight: 500;
+    color: #333;
+    font-size: 14px;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.lote .date,
+.lote .fornecedor {
+    display: flex;
+    flex-direction: column;
+    margin-top: 1vh;
+}
+
 
 #inputdata {
     margin-top: 5%;
@@ -383,6 +443,7 @@ td {
     background-color: #FFFFFF;
     padding: 0.12vh 0.4vh 0.12vh 0.4vh;
     transition: background-color 0.2s ease;
+    cursor: pointer;
 }
 
 #tabela-estoque tr:hover {

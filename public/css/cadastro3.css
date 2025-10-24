@@ -241,6 +241,10 @@ section.cadastro .flex .parte-bolinhas .container {
     margin-top: 10vh;
 }
 
+button{
+    cursor: pointer;
+}
+
 .inserir-info .container button img{
     height: auto;
     width: 15vh;
@@ -253,6 +257,33 @@ section.cadastro .flex .parte-bolinhas .container {
 
 .inserir-info .setas button:hover{
     transform: scale(1.05);
+}
+
+label{
+    font-size: 1.3rem;
+}
+
+#categorias{
+    margin-top: 1vh;
+    width: 100%;
+    padding: 2.3%;
+    border: 0.1vh solid #ccc;
+    border-radius: 0.4vh;
+    box-sizing: border-box;
+    font-family: "Inter", serif;
+    font-size: 2vh;
+    box-shadow: 0.4vh 0.4vh 0.4vh #c4c4c4;
+    cursor: pointer;
+
+    & option{
+        color: #000;
+    }
+}
+
+#categorias:focus{
+    outline: none;
+    border-color: #DA0000;
+    box-shadow: 0 0 0 3px rgba(218, 0, 0, 0.2);
 }
 
 .footer{
